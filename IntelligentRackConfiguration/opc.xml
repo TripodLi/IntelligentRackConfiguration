@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<OPC>
+  <opcitem client="0" value="Channel1.Device.Control" />
+  <opcitem client="1" value="Channel1.Device.WorkerId"/>
+</OPC>

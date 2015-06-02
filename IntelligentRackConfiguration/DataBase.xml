@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Config>
+  <DataSource    value="XH01" remark="数据库别名" />
+  <UserId        value="xh" remark="登录名" />
+  <Password      value="xh" remark="登陆密码" />
+</Config>
+
