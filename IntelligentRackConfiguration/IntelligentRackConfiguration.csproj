@@ -35,8 +35,9 @@
     <ApplicationIcon>log.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MyOPC">
-      <HintPath>E:\OPC\MyOPC.dll</HintPath>
+    <Reference Include="MyOPC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\MyOPC.dll</HintPath>
     </Reference>
     <Reference Include="MySql">
       <HintPath>.\MySql.dll</HintPath>
@@ -118,9 +119,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="log.ico" />
-    <Content Include="opc.xml">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

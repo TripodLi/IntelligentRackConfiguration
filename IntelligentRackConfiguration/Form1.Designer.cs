@@ -412,7 +412,23 @@ namespace IntelligentRackConfiguration
             "5号料格",
             "6号料格",
             "7号料格",
-            "8号料格"});
+            "8号料格",
+            "9号料格",
+            "10号料格",
+            "11号料格",
+            "12号料格",
+            "13号料格",
+            "14号料格",
+            "15号料格",
+            "16号料格",
+            "17号料格",
+            "18号料格",
+            "19号料格",
+            "20号料格",
+            "21号料格",
+            "22号料格",
+            "23号料格",
+            "24号料格"});
             this.CB_MaterialShelfNo.Location = new System.Drawing.Point(-2, 28);
             this.CB_MaterialShelfNo.Name = "CB_MaterialShelfNo";
             this.CB_MaterialShelfNo.Size = new System.Drawing.Size(178, 20);

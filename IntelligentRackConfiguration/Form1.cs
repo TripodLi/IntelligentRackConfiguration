@@ -297,6 +297,7 @@ namespace IntelligentRackConfiguration
             TB_FeatureCode.Text = "";
             TB_SleeveNo.SelectedIndex = -1;
             CB_PhotoNo.SelectedIndex = -1;
+            TB_ReworkTimes.Text = "";
         }
         /// <summary>
         /// 读取配置文件方法
@@ -370,22 +371,33 @@ namespace IntelligentRackConfiguration
 
         private void TB_FeatureCode_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (nonNumberEntered)
+            //if (nonNumberEntered)
+            //{
+            //    e.Handled = true;
+            //}
+            this.TB_FeatureCode.ImeMode = ImeMode.Off;
+            if ((e.KeyChar >= '0' && e.KeyChar <= '9') || (e.KeyChar >= 'A') && (e.KeyChar <= 'Z') || (e.KeyChar >= 'a' && e.KeyChar <= 'z'))
             {
+                e.Handled = false;
+            }
+            else
+            {
+                MessageBox.Show("只能输入字母或数字");
                 e.Handled = true;
+
             }
         }
 
         private void TB_FeatureCode_KeyDown(object sender, KeyEventArgs e)
         {
-            nonNumberEntered = false;
-            if ((e.KeyCode < Keys.D0) || (e.KeyCode > Keys.D9 && e.KeyCode < Keys.NumPad0) || (e.KeyCode > Keys.NumPad9))
-            {
-                if (e.KeyCode != Keys.Back)
-                {
-                    nonNumberEntered = true;
-                }
-            }
+            //nonNumberEntered = false;
+            //if ((e.KeyCode < Keys.D0) || (e.KeyCode > Keys.D9 && e.KeyCode < Keys.NumPad0) || (e.KeyCode > Keys.NumPad9))
+            //{
+            //    if (e.KeyCode != Keys.Back)
+            //    {
+            //        nonNumberEntered = true;
+            //    }
+            //}
         }
         private void TB_ReworkTimes_KeyDown(object sender, KeyEventArgs e)
         {
@@ -489,6 +501,7 @@ namespace IntelligentRackConfiguration
 
             if (dt1.Rows.Count > 0)
             {
+            //    String sq = "SELECT  FROM XH_PRODUCTION_T PT,XH_FEERACK_T FT WHERE PT.FEERACK_ID PT.PRODUCTION_TYPE="+;
                 dataGridView1.Visible = true;
                 dataGridView2.Visible = false;
                 dataGridView1.DataSource = dt1;
@@ -619,13 +632,13 @@ namespace IntelligentRackConfiguration
                     //存入特征码
                     if (String.Equals(this.dataGridView2.Rows[i].Cells[7].Value, "--"))
                     {
-                        myCommand.Parameters.Add("@FEATURE_CODE", SqlDbType.Int);
-                        myCommand.Parameters["@FEATURE_CODE"].Value = 0;  //貌似这里存的好像有点问题，有待验证
+                        myCommand.Parameters.Add("@FEATURE_CODE", SqlDbType.VarChar);
+                        myCommand.Parameters["@FEATURE_CODE"].Value ="--";  //貌似这里存的好像有点问题，有待验证
                     }
                     else
                     {
-                        myCommand.Parameters.Add("@FEATURE_CODE", SqlDbType.Int);
-                        myCommand.Parameters["@FEATURE_CODE"].Value = Convert.ToInt32(this.dataGridView2.Rows[i].Cells[7].Value);
+                        myCommand.Parameters.Add("@FEATURE_CODE", SqlDbType.VarChar);
+                        myCommand.Parameters["@FEATURE_CODE"].Value = this.dataGridView2.Rows[i].Cells[7].Value;
                     }
                     //存入套筒号
                     if (String.Equals(this.dataGridView2.Rows[i].Cells[9].Value, "--"))
@@ -664,7 +677,10 @@ namespace IntelligentRackConfiguration
                     //    myCommand.Parameters["@INTELLIGENTRACK_DETAIL_ID"].Value = Convert.ToInt32(this.dataGridView1.Rows[i].Cells[11].Value);
                     //}
                     myCommand.ExecuteNonQuery();
+                   
                 }
+                MessageBox.Show("保存成功！");
+                dataBind();
             }
             catch (Exception ex)
             {
@@ -774,7 +790,7 @@ namespace IntelligentRackConfiguration
                 {
                     int a = Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Category"].Value.ToString());
                     String sql = "UPDATE XH_INTELLIGENTRACK_DETAIL_T SET STEP_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["StepNo"].Value.ToString()) + " ,CATEGORY=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Category"].Value.ToString()) + ",NAME='" + this.dataGridView1.Rows[i].Cells["Desc"].Value.ToString() + "',MATERIALSHELF_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["MaterialShelfNo"].Value.ToString()) + ",GUN_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["GunNo"].Value.ToString()) +
-                   " ,PROGRAME_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["ProgrameNo"].Value.ToString()) + ",MATERIAL_NUMBER=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Number"].Value.ToString()) + ",FEATURE_CODE=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["FeatureCode"].Value.ToString()) + ",SLEEVE_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["SleeveNo"].Value.ToString()) + ",PHOTO_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["PhotoNo"].Value.ToString()) + ",REWORK_TIMES=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Rework_Time"].Value.ToString()) +
+                   " ,PROGRAME_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["ProgrameNo"].Value.ToString()) + ",MATERIAL_NUMBER=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Number"].Value.ToString()) + ",FEATURE_CODE='" + this.dataGridView1.Rows[i].Cells["FeatureCode"].Value.ToString() + "',SLEEVE_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["SleeveNo"].Value.ToString()) + ",PHOTO_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["PhotoNo"].Value.ToString()) + ",REWORK_TIMES=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Rework_Time"].Value.ToString()) +
                    " WHERE INTELLIGENTRACK_DETAIL_ID=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["INTELLIGENTRACK_DATAIL_ID"].Value.ToString());
                     db.ExecuteNonQuery(sql);
                 }
