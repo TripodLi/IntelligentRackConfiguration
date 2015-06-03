@@ -486,7 +486,7 @@ namespace IntelligentRackConfiguration
             // 
             // BT_Cancel
             // 
-            this.BT_Cancel.Location = new System.Drawing.Point(84, 436);
+            this.BT_Cancel.Location = new System.Drawing.Point(746, 659);
             this.BT_Cancel.Name = "BT_Cancel";
             this.BT_Cancel.Size = new System.Drawing.Size(75, 23);
             this.BT_Cancel.TabIndex = 31;
@@ -496,7 +496,7 @@ namespace IntelligentRackConfiguration
             // 
             // BT_MaterialSubmit
             // 
-            this.BT_MaterialSubmit.Location = new System.Drawing.Point(494, 659);
+            this.BT_MaterialSubmit.Location = new System.Drawing.Point(414, 659);
             this.BT_MaterialSubmit.Name = "BT_MaterialSubmit";
             this.BT_MaterialSubmit.Size = new System.Drawing.Size(75, 23);
             this.BT_MaterialSubmit.TabIndex = 33;
@@ -506,12 +506,13 @@ namespace IntelligentRackConfiguration
             // 
             // BT_MaterialCancel
             // 
-            this.BT_MaterialCancel.Location = new System.Drawing.Point(644, 659);
+            this.BT_MaterialCancel.Location = new System.Drawing.Point(591, 659);
             this.BT_MaterialCancel.Name = "BT_MaterialCancel";
             this.BT_MaterialCancel.Size = new System.Drawing.Size(75, 23);
             this.BT_MaterialCancel.TabIndex = 34;
-            this.BT_MaterialCancel.Text = "取消";
+            this.BT_MaterialCancel.Text = "修改";
             this.BT_MaterialCancel.UseVisualStyleBackColor = true;
+            this.BT_MaterialCancel.Click += new System.EventHandler(this.BT_MaterialCancel_Click);
             // 
             // TB_SleeveNo
             // 
@@ -570,10 +571,10 @@ namespace IntelligentRackConfiguration
             this.CB_GunNo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CB_GunNo.FormattingEnabled = true;
             this.CB_GunNo.Items.AddRange(new object[] {
-            "1号枪头",
-            "2号枪头",
-            "3号枪头",
-            "4号枪头"});
+            "1号枪",
+            "2号枪",
+            "3号枪",
+            "4号枪"});
             this.CB_GunNo.Location = new System.Drawing.Point(-2, 29);
             this.CB_GunNo.Name = "CB_GunNo";
             this.CB_GunNo.Size = new System.Drawing.Size(178, 20);
@@ -619,9 +620,9 @@ namespace IntelligentRackConfiguration
             this.panel1.Controls.Add(this.dataGridView2);
             this.panel1.Controls.Add(this.dataGridView1);
             this.panel1.Controls.Add(this.label4);
-            this.panel1.Location = new System.Drawing.Point(311, 64);
+            this.panel1.Location = new System.Drawing.Point(224, 64);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(611, 579);
+            this.panel1.Size = new System.Drawing.Size(698, 579);
             this.panel1.TabIndex = 32;
             // 
             // dataGridView2
@@ -641,10 +642,10 @@ namespace IntelligentRackConfiguration
             this.Seelve_No,
             this.Rework_Times,
             this.IDT});
-            this.dataGridView2.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView2.Location = new System.Drawing.Point(0, -2);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowTemplate.Height = 23;
-            this.dataGridView2.Size = new System.Drawing.Size(611, 579);
+            this.dataGridView2.Size = new System.Drawing.Size(698, 581);
             this.dataGridView2.TabIndex = 21;
             // 
             // Step_NO
@@ -730,11 +731,11 @@ namespace IntelligentRackConfiguration
             this.FEERACK_ID,
             this.production_name,
             this.PORDUCTION_TYPE});
-            this.dataGridView1.Location = new System.Drawing.Point(3, -2);
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(605, 577);
+            this.dataGridView1.Size = new System.Drawing.Size(698, 575);
             this.dataGridView1.TabIndex = 20;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
             // 
@@ -855,7 +856,6 @@ namespace IntelligentRackConfiguration
             this.flowLayoutPanel1.Controls.Add(this.PhotoNopanel);
             this.flowLayoutPanel1.Controls.Add(this.Reworkpanel);
             this.flowLayoutPanel1.Controls.Add(this.BT_StepSubmit);
-            this.flowLayoutPanel1.Controls.Add(this.BT_Cancel);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(14, 273);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(1, 3, 3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -989,6 +989,7 @@ namespace IntelligentRackConfiguration
             this.Controls.Add(this.TB_MaterialName);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.LB_MaterailName);
+            this.Controls.Add(this.BT_Cancel);
             this.Controls.Add(this.CB_Category);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.LB_Category);

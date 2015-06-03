@@ -258,5 +258,64 @@ namespace IntelligentRackConfiguration
             t.AutoReset = true;   //设置是执行一次（false）还是一直执行(true)；   
             t.Enabled = true;  
         }
+
+        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e == null || e.Value == null || !(sender is DataGridView))
+                return;
+
+            DataGridView view = (DataGridView)sender;
+            object originalValue = e.Value;
+            //更改类别显示
+            if (view.Columns[e.ColumnIndex].DataPropertyName == "CATEGORY")
+                switch ((int)originalValue)
+                {
+                    case 1:
+                        e.Value = (int)originalValue + ".扫描";
+                        break;
+                    case 2:
+                        e.Value = (int)originalValue + ".拧紧";
+                        break;
+                    case 3:
+                        e.Value = (int)originalValue + ".拍照";
+                        break;
+                    case 4:
+                        e.Value = "END";
+                        break;
+                }
+            //转换料格号
+            if (view.Columns[e.ColumnIndex].DataPropertyName == "MATERIALSHELF_NO")
+            {
+                if ((int)originalValue > 0)
+                {
+                    e.Value = (int)originalValue + "号料格";
+                }
+            }
+            //转换枪号
+            if (view.Columns[e.ColumnIndex].DataPropertyName == "GUN_NO")
+            {
+                if ((int)originalValue > 0)
+                {
+                    e.Value = (int)originalValue + "号枪";
+                }
+            }
+            //转换套筒号
+            if (view.Columns[e.ColumnIndex].DataPropertyName == "SLEEVE_NO")
+            {
+                if ((int)originalValue > 0)
+                {
+                    e.Value = (int)originalValue + "号套筒";
+                }
+            }
+            //转换相机号
+            if (view.Columns[e.ColumnIndex].DataPropertyName == "PHOTO_NO")
+            {
+                if ((int)originalValue > 0)
+                {
+                    e.Value = (int)originalValue + "号相机";
+                }
+            }
+                
+        }
     }
 }

@@ -512,6 +512,7 @@ namespace IntelligentRackConfiguration
         private void BT_MaterialSubmit_Click(object sender, EventArgs e)
         {
             Save();
+            dataBind();
 
         }
         private SqlConnection GetConn() 
@@ -725,13 +726,63 @@ namespace IntelligentRackConfiguration
                         e.Value = "END";
                         break;
                 }
-                
+            //转换料格号
+            if (view.Columns[e.ColumnIndex].DataPropertyName == "MATERIALSHELF_NO")
+            {
+                if ((int)originalValue > 0)
+                {
+                    e.Value = (int)originalValue + "号料格";
+                }
+             }
+        //转换枪号
+         if (view.Columns[e.ColumnIndex].DataPropertyName == "GUN_NO")
+         {
+             if ((int)originalValue>0)
+             {
+                 e.Value = (int)originalValue + "号枪";
+             }
+         }
+         //转换套筒号
+         if (view.Columns[e.ColumnIndex].DataPropertyName == "SLEEVE_NO")
+         {
+             if ((int)originalValue > 0)
+             {
+                 e.Value = (int)originalValue + "号套筒";
+             }
+         }
+         //转换相机号
+         if (view.Columns[e.ColumnIndex].DataPropertyName == "PHOTO_NO")
+         {
+             if ((int)originalValue > 0)
+             {
+                 e.Value = (int)originalValue + "号相机";
+             }
+         }
                 
         }
 
         private void CB_Station_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void BT_MaterialCancel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    int a = Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Category"].Value.ToString());
+                    String sql = "UPDATE XH_INTELLIGENTRACK_DETAIL_T SET STEP_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["StepNo"].Value.ToString()) + " ,CATEGORY=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Category"].Value.ToString()) + ",NAME='" + this.dataGridView1.Rows[i].Cells["Desc"].Value.ToString() + "',MATERIALSHELF_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["MaterialShelfNo"].Value.ToString()) + ",GUN_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["GunNo"].Value.ToString()) +
+                   " ,PROGRAME_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["ProgrameNo"].Value.ToString()) + ",MATERIAL_NUMBER=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Number"].Value.ToString()) + ",FEATURE_CODE=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["FeatureCode"].Value.ToString()) + ",SLEEVE_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["SleeveNo"].Value.ToString()) + ",PHOTO_NO=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["PhotoNo"].Value.ToString()) + ",REWORK_TIMES=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["Rework_Time"].Value.ToString()) +
+                   " WHERE INTELLIGENTRACK_DETAIL_ID=" + Convert.ToInt32(this.dataGridView1.Rows[i].Cells["INTELLIGENTRACK_DATAIL_ID"].Value.ToString());
+                    db.ExecuteNonQuery(sql);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("更新失败！");
+            }
         }
 
         //private void dataGridView1_Click(object sender, EventArgs e)
