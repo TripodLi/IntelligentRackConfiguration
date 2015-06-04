@@ -524,8 +524,33 @@ namespace IntelligentRackConfiguration
         /// <param name="e"></param>
         private void BT_MaterialSubmit_Click(object sender, EventArgs e)
         {
-            Save();
-            dataBind();
+            bool a ;
+            int count = dataGridView2.Rows.Count;
+            int [] step=new int[count];
+            for (int i = 0; i < count; i++)
+            {
+                step[i] = Convert.ToInt32(dataGridView2.Rows[i].Cells[0].Value.ToString());
+            }
+            try
+            {
+                a = CheckStepNo(step);
+                if (a)
+                {
+                    Save();
+                    dataBind();
+                }
+                else
+                {
+                    MessageBox.Show("步序不对，需连续且从1开始！");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("检查步序出错！");
+            }
+               
+           
+           
 
         }
         private SqlConnection GetConn() 
@@ -805,7 +830,34 @@ namespace IntelligentRackConfiguration
         //{
         //    dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Selected = true;
         //}
-
+        public bool CheckStepNo(int[] array)
+        {
+            Array.Sort(array);  //将数组中的元素从大到小排列
+          //  Array.Reverse(array); //将数组中的元素进行翻转
+            if (array.Length == 1 && array[0] == 1)
+            {
+                return true;
+            }
+            else
+            {
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (i==array.Length-1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                    if (array[i] + 1 != array[i + 1] || array[0] != 1)
+                    {
+                        return false;
+                    }
+                    }
+                }
+                return true;
+            }
+           
+        }
     
     }
 }

@@ -64,14 +64,22 @@ namespace IntelligentRackConfiguration
 
         private void ConnectionOpcForm_Load(object sender, EventArgs e)
         {
-
+            try
+            {
+                //监听地址并发送消息
+                OPC = new OPCCreate();
+            }
+            catch
+            {
+                MessageBox.Show("OPC连接失败！");
+            }
         }
         /// <summary>
         /// 监听OPC地址块
         /// </summary>
         public void Opc(object source, System.Timers.ElapsedEventArgs e)
         {
-         //   t.Enabled = false;
+            t.Enabled = false;
             try
             {
                 int opcProductionType;
@@ -212,7 +220,7 @@ namespace IntelligentRackConfiguration
 
                         break;
                 } 
-             //   t.Enabled = true;
+               t.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -248,15 +256,7 @@ namespace IntelligentRackConfiguration
         public void ConnectionOpcForm_Shown(object sender, EventArgs e)
         {
             BindData();
-            try
-            {
-                //监听地址并发送消息
-                OPC = new OPCCreate();
-            }
-            catch
-            {
-                MessageBox.Show("OPC连接失败！");
-            }
+       
             t.Elapsed += new System.Timers.ElapsedEventHandler(Opc); //到达时间的时候执行事件；   
             t.AutoReset = true;   //设置是执行一次（false）还是一直执行(true)；   
             t.Enabled = true;  
