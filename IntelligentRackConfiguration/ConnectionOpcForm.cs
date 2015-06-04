@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -17,7 +18,7 @@ namespace IntelligentRackConfiguration
     {
         public static int feerackId;
         public static int productionType;
-        System.Timers.Timer t = new System.Timers.Timer(500);   //实例化Timer类，设置间隔时间为500毫秒；
+          //实例化Timer类，设置间隔时间为500毫秒；
         public static OPCCreate OPC = null;
         DbUtility db = new DbUtility("Data Source=.;Initial Catalog=" + GetXml("DataSource", "value") + ";User ID=sa;pwd=" + GetXml("Password", "value"), DbProviderType.SqlServer);
         Form1 F=null;
@@ -77,23 +78,25 @@ namespace IntelligentRackConfiguration
         /// <summary>
         /// 监听OPC地址块
         /// </summary>
-        public void Opc(object source, System.Timers.ElapsedEventArgs e)
+        public void Opc(object source, System.Timers.ElapsedEventArgs e,string feerack,int feerackId)
         {
-            t.Enabled = false;
+          //  t.Enabled = false;
             try
             {
                 int opcProductionType;
                 String plcEmpName;
-                int control = Convert.ToInt32((OPC.ReadItem(0).ToString()));
+                int feerackControl =Convert.ToInt32(GetOpcConfigXml(feerack, "1"));
+                int control = Convert.ToInt32((OPC.ReadItem(feerackControl).ToString()));
                 switch (control)
                 {
                     case 1: //请求对比员工号，但是没有发员工的名字，直接写错误9：错误
-                        plcEmpName = OPC.ReadItem(1).ToString();
+
+                        plcEmpName = OPC.ReadItem(Convert.ToInt32(GetOpcConfigXml(feerack, "2"))).ToString();
                       //  plcEmpName = "张三";
                         if (String.IsNullOrEmpty(plcEmpName))
                         {
 
-                            OPC.WriteItem(0, 9);
+                            OPC.WriteItem(feerackControl, 9);
                         }
                         else
                         {
@@ -103,21 +106,21 @@ namespace IntelligentRackConfiguration
                             if (dt.Rows.Count > 0)
                             {
                                 //员工号通过
-                                OPC.WriteItem(0, 2);
+                                OPC.WriteItem(feerackControl, 2);
                             }
                             else
                             {
                                 //员工号不通过
-                                OPC.WriteItem(0, 3);
+                                OPC.WriteItem(feerackControl, 3);
                             }
                         }
                         break;
                     case 11: //请求产品的名称
-                          opcProductionType = Convert.ToInt32((OPC.ReadItem(2).ToString()));
+                        opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetOpcConfigXml(feerack, "3"))).ToString()));
                         if (opcProductionType <= 0 && opcProductionType > 10)
                         {
                             //不是产品类型
-                            OPC.WriteItem(0, 19);
+                            OPC.WriteItem(feerackControl, 19);
                         }
                         String sql1 = "SELECT COUNT(IDT.INTELLIGENTRACK_DETAIL_ID)AS STEPNUM,PT.PRODUCTION_NAME FROM XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT,XH_INTELLIGENTRACK_DETAIL_T IDT WHERE IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND PT.FEERACK_ID=" + feerackId +" AND IDT.DELETE_FLAG='0'"+ "  GROUP BY PT.PRODUCTION_NAME";
                         //    String sql1 = "SELECT PT.PRODUCTION_NAME FROM XH_PRODUCTION_T PT WHERE PT.PRODUCTION_TYPE=" + opcProductionType + " AND PT.FEERACK_ID=" + Convert.ToInt32(F.CB_Station.SelectedValue) + ";";
@@ -126,24 +129,24 @@ namespace IntelligentRackConfiguration
                         if (dt2.Rows.Count == 1)
                         {
                             //写入名称
-                            OPC.WriteItem(3, dt2.Rows[0]["PRODUCTION_NAME"].ToString());
+                            OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "4")), dt2.Rows[0]["PRODUCTION_NAME"].ToString());
                             //写入总步数
-                            OPC.WriteItem(4, Convert.ToInt32(dt2.Rows[0]["STEPNUM"].ToString()));
+                            OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "5")), Convert.ToInt32(dt2.Rows[0]["STEPNUM"].ToString()));
                             //完成
-                            OPC.WriteItem(0, 12);
+                            OPC.WriteItem(feerackControl, 12);
                         }
                         else
                         {
                             //错误
-                            OPC.WriteItem(0, 19);
+                            OPC.WriteItem(feerackControl, 19);
                         }
 
                         break;
                     case 21:  //请求步
-                        int reqStep = Convert.ToInt32((OPC.ReadItem(5).ToString()));
+                        int reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetOpcConfigXml(feerack, "6"))).ToString()));
                         if (reqStep <= 0)
                         {
-                            OPC.WriteItem(0, 29);
+                            OPC.WriteItem(feerackControl, 29);
                         }
                         else
                         {
@@ -151,76 +154,76 @@ namespace IntelligentRackConfiguration
                             DataTable dt3 = new DataTable();
                             dt3 = db.ExecuteDataTable(sql2);
                             //写入类别
-                            OPC.WriteItem(6, Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()));
+                            OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "7")), Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()));
                             switch (Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()))
                             {
                                 case 1: //扫描
                                     //写入名字
-                                    OPC.WriteItem(7, dt3.Rows[0]["NAME"].ToString());
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "8")), dt3.Rows[0]["NAME"].ToString());
                                     //写入料格号
-                                    OPC.WriteItem(8, Convert.ToInt32(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()));
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "9")), Convert.ToInt32(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()));
                                     //写入数量
-                                    OPC.WriteItem(9, Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "10")), Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
                                     // 完成
-                                    OPC.WriteItem(0,22);
+                                    OPC.WriteItem(feerackControl, 22);
                                     break;
                                 case 2: //拧紧
                                     //写入名字
-                                    OPC.WriteItem(7, dt3.Rows[0]["NAME"].ToString());
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "8")), dt3.Rows[0]["NAME"].ToString());
                                     //写入工具号
-                                    OPC.WriteItem(8, Convert.ToInt32(dt3.Rows[0]["GUN_NO"].ToString()));
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "9")), Convert.ToInt32(dt3.Rows[0]["GUN_NO"].ToString()));
                                     //请求步套筒号
-                                    OPC.WriteItem(10, Convert.ToInt32(dt3.Rows[0]["SLEEVE_NO"].ToString()));
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "11")), Convert.ToInt32(dt3.Rows[0]["SLEEVE_NO"].ToString()));
                                     //请求步程序号
-                                    OPC.WriteItem(11, Convert.ToInt32(dt3.Rows[0]["PROGRAME_NO"].ToString()));
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "12")), Convert.ToInt32(dt3.Rows[0]["PROGRAME_NO"].ToString()));
                                     //写入返工次数
-                                    OPC.WriteItem(12, Convert.ToInt32(dt3.Rows[0]["REWORK_TIMES"].ToString()));
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "13")), Convert.ToInt32(dt3.Rows[0]["REWORK_TIMES"].ToString()));
                                     //写入数量
-                                    OPC.WriteItem(9, Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "10")), Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
                                     // 完成
-                                    OPC.WriteItem(0, 22);
+                                    OPC.WriteItem(feerackControl, 22);
                                     break;
                                 case 3: //照相
                                     //写入名字
-                                    OPC.WriteItem(7, dt3.Rows[0]["NAME"].ToString());
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "8")), dt3.Rows[0]["NAME"].ToString());
                                     //写入工具号
-                                    OPC.WriteItem(8, Convert.ToInt32(dt3.Rows[0]["PHOTO_NO"].ToString()));
+                                    OPC.WriteItem(Convert.ToInt32(GetOpcConfigXml(feerack, "9")), Convert.ToInt32(dt3.Rows[0]["PHOTO_NO"].ToString()));
                                     // 完成
-                                    OPC.WriteItem(0, 22);
+                                    OPC.WriteItem(feerackControl, 22);
                                     break;
                             }
 
                         }
                         break;
                     case 31:
-                        String pn = OPC.ReadItem(13).ToString();
+                        String pn = OPC.ReadItem(Convert.ToInt32(GetOpcConfigXml(feerack, "14"))).ToString();
                         if (String.IsNullOrEmpty(pn))
                         {
                             //写入为空或错误
-                            OPC.WriteItem(0, 39);
+                            OPC.WriteItem(feerackControl, 39);
                         }
                         else
                         {
-                            int type = Convert.ToInt32((OPC.ReadItem(2).ToString()));
+                            int type = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetOpcConfigXml(feerack, "3"))).ToString()));
 
-                            String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + type + " AND IDT.STEP_NO=" + Convert.ToInt32((OPC.ReadItem(5).ToString())) + " AND FT.FEERACK_ID=" + feerackId + " AND IDT.DELETE_FLAG='0'" + ";";
+                            String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + type + " AND IDT.STEP_NO=" + Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetOpcConfigXml(feerack, "6"))).ToString())) + " AND FT.FEERACK_ID=" + feerackId + " AND IDT.DELETE_FLAG='0'" + ";";
                             DataTable dt4 = new DataTable();
                             dt4 = db.ExecuteDataTable(sql3);
                             if (String.Equals(pn,dt4.Rows[0]["FEATURE_CODE"].ToString()))
                             {
                                 //特征码通过
-                                OPC.WriteItem(0, 32);
+                                OPC.WriteItem(feerackControl, 32);
                             }
                             else
                             {
                                 //特征码不通过
-                                OPC.WriteItem(0, 33);
+                                OPC.WriteItem(feerackControl, 33);
                             }
                         }
 
                         break;
                 } 
-               t.Enabled = true;
+             //  t.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -253,13 +256,45 @@ namespace IntelligentRackConfiguration
             return result;
         }
 
+        /// <summary>
+        /// 读取opc配置文件 根据料架号和order 得到client
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="attribute"></param>
+        /// <returns></returns>
+        public static string GetOpcConfigXml(string feerack, string order)
+        {
+            string result = null;
+            XmlDocument xmlDoc = new XmlDocument();
+            string addr = "opc.xml";
+            xmlDoc.Load(addr);
+            XmlNode nd;
+            nd = xmlDoc.SelectSingleNode("OPC");
+            XmlNodeList xnl = nd.ChildNodes;
+            foreach (XmlNode xn in xnl)
+            {
+                XmlElement xe = (XmlElement)xn;
+                if (xe.GetAttribute("feerack") == feerack && xe.GetAttribute("order") == order)
+                {
+                    result = xe.GetAttribute("client");
+                }
+            }
+            return result;
+        }
         public void ConnectionOpcForm_Shown(object sender, EventArgs e)
         {
             BindData();
-       
-            t.Elapsed += new System.Timers.ElapsedEventHandler(Opc); //到达时间的时候执行事件；   
+            DataTable dt=new DataTable();
+            String sql = "select count(pt.production_id)as productioncont,ft.feerack_id as feerackcount,ft.FEERACK_NAME from xh_production_t pt,xh_feerack_t ft where pt.feerack_id=ft.feerack_id and pt.DELETE_FLAG='0' group by ft.feerack_id,ft.FEERACK_NAME ";
+            dt = db.ExecuteDataTable(sql);
+            for(int i=0;i<dt.Rows.Count;i++) //循环查找产品，有多少产品配置了信息，就开启多少线程
+            {
+             String feerack=(dt.Rows[i][2].ToString()).Substring(0,1); //得到料架编号
+            System.Timers.Timer t = new System.Timers.Timer(500);
+            t.Elapsed += new ElapsedEventHandler((s, e1) => Opc(s, e1, feerack, Convert.ToInt32((dt.Rows[i][1].ToString()))));  //传入料架ID和料架编号，以便监听时查询数据库和监听OPC的值 
             t.AutoReset = true;   //设置是执行一次（false）还是一直执行(true)；   
             t.Enabled = true;  
+            }
         }
 
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
