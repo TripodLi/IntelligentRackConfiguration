@@ -78,11 +78,16 @@ namespace IntelligentRackConfiguration
         /// <summary>
         /// 监听OPC地址块
         /// </summary>
-        public void Opc(object source, System.Timers.ElapsedEventArgs e,string feerack,int feerackId)
+        public void Opc(object source, System.Timers.ElapsedEventArgs e)
         {
-          //  t.Enabled = false;
+            
             try
             {
+                OverrideTimer t = (OverrideTimer)source;
+                //t.AutoReset = false;
+                t.Stop();
+                string feerack = t.Feerackno;
+                int feerackId = t.FeerackId;
                 int opcProductionType;
                 String plcEmpName;
                 int feerackControl =Convert.ToInt32(GetOpcConfigXml(feerack, "1"));
@@ -195,7 +200,7 @@ namespace IntelligentRackConfiguration
 
                         }
                         break;
-                    case 31:
+                    case 31: //对比特征码
                         String pn = OPC.ReadItem(Convert.ToInt32(GetOpcConfigXml(feerack, "14"))).ToString();
                         if (String.IsNullOrEmpty(pn))
                         {
@@ -220,10 +225,9 @@ namespace IntelligentRackConfiguration
                                 OPC.WriteItem(feerackControl, 33);
                             }
                         }
-
                         break;
-                } 
-             //  t.Enabled = true;
+                }
+                t.Start();
             }
             catch (Exception ex)
             {
@@ -287,13 +291,16 @@ namespace IntelligentRackConfiguration
             DataTable dt=new DataTable();
             String sql = "select count(pt.production_id)as productioncont,ft.feerack_id as feerackcount,ft.FEERACK_NAME from xh_production_t pt,xh_feerack_t ft where pt.feerack_id=ft.feerack_id and pt.DELETE_FLAG='0' group by ft.feerack_id,ft.FEERACK_NAME ";
             dt = db.ExecuteDataTable(sql);
-            for(int i=0;i<dt.Rows.Count;i++) //循环查找产品，有多少产品配置了信息，就开启多少线程
+            for(int i=0;i<1;i++) //循环查找产品，有多少产品配置了信息，就开启多少线程
             {
              String feerack=(dt.Rows[i][2].ToString()).Substring(0,1); //得到料架编号
-            System.Timers.Timer t = new System.Timers.Timer(500);
-            t.Elapsed += new ElapsedEventHandler((s, e1) => Opc(s, e1, feerack, Convert.ToInt32((dt.Rows[i][1].ToString()))));  //传入料架ID和料架编号，以便监听时查询数据库和监听OPC的值 
-            t.AutoReset = true;   //设置是执行一次（false）还是一直执行(true)；   
-            t.Enabled = true;  
+             OverrideTimer t = new OverrideTimer();
+             t.FeerackId = Convert.ToInt32((dt.Rows[i][1].ToString()));
+             t.Feerackno = feerack;
+             t.Interval = 1000;
+             t.Elapsed += new System.Timers.ElapsedEventHandler(Opc);  //传入料架ID和料架编号，以便监听时查询数据库和监听OPC的值 
+             t.Enabled = true;
+             t.AutoReset = false;
             }
         }
 
