@@ -11,6 +11,12 @@ namespace IntelligentRackConfiguration
      
           private int feerackId;
           private string feerackno;
+          private int[] canRead;
+          public int[] CanRead
+          {
+              get { return canRead; }
+              set { canRead = value; }
+          }
 
           public string Feerackno
           {

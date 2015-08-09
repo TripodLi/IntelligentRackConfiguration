@@ -16,19 +16,38 @@ namespace IntelligentRackConfiguration
         [STAThread]
         static void Main()
         {
-            Process[] processcollection = Process.GetProcessesByName(Application.CompanyName);
-            if (processcollection.Length >= 1)
+            bool createNew;
+            using (System.Threading.Mutex mutex = new System.Threading.Mutex(true, Application.ProductName, out createNew))
             {
-                MessageBox.Show("应用程序已经在运行中.....");
-                Thread.Sleep(1000);
-                System.Environment.Exit(1);
+                if (createNew)
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+                    AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandleException);
+                    Form1 f = new Form1();
+                    if (f.ShowDialog() == DialogResult.OK)
+                    {
+                        Application.Run(new Form1());
+                    }
+
+                }
+                else
+                {
+                    MessageBox.Show("应用程序已经在运行中.....");
+                    Thread.Sleep(1000);
+                    System.Environment.Exit(1);
+                }
             }
-            else
-            {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new Form1());
-            }
+           
+        }
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            MessageBox.Show(e.Exception.Message);
+        }
+        static void CurrentDomain_UnhandleException(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.ExceptionObject.ToString());
         }
     }
 }

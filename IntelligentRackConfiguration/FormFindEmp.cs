@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,7 +15,8 @@ namespace IntelligentRackConfiguration
 {
     public partial class FormFindEmp : Form
     {
-        DbUtility db = new DbUtility("Data Source=.;Initial Catalog=" + GetXml("DataSource", "value") + ";User ID=sa;pwd=" + GetXml("Password", "value"), DbProviderType.SqlServer);
+      //  DbUtility db = new DbUtility("Data Source=.;Initial Catalog=" + GetXml("DataSource", "value") + ";User ID=sa;pwd=" + GetXml("Password", "value"), DbProviderType.SqlServer);
+        DbUtility db = new DbUtility("server=" + GetXml("DataSource", "value") + "; " + "database=" + GetXml("InitialCatalog", "value") + ";User Id=" + GetXml("UserId", "value") + ";pwd=" + GetXml("Password", "value"), DbProviderType.SqlServer);
         public FormFindEmp()
         {
             InitializeComponent();
@@ -27,7 +29,8 @@ namespace IntelligentRackConfiguration
             CB_EmpStation.DataSource = dt;
             CB_EmpStation.DisplayMember = "FEERACK_NAME";
             CB_EmpStation.ValueMember = "FEERACK_ID";
-            FindEmp();
+            CB_EmpStation.SelectedIndex = 0;
+          //  FindEmp();
         }
         /// <summary>
         /// 读取配置文件
@@ -57,14 +60,14 @@ namespace IntelligentRackConfiguration
 
         private void BT_Sure_Click(object sender, EventArgs e)
         {
-            try
-            {
-                FindEmp();
-            }
-            catch
-            {
-                MessageBox.Show("查找失败！");
-            }
+            //try
+            //{
+            //    FindEmp();
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("查找失败！");
+            //}
            
         }
         public void FindEmp()
@@ -103,6 +106,66 @@ namespace IntelligentRackConfiguration
             catch (Exception ex)
             {
                 MessageBox.Show("删除员工失败！");
+            }
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
+            this.Close();
+        }
+
+        private void FormFindEmp_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, 0xA1, 0x02, 0);
+            }
+        }
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+        [DllImport("user32.dll")]
+        public static extern bool SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+
+        private void CB_EmpStation_SelectedValueChanged(object sender, EventArgs e)
+        {
+            //try
+            //{
+            //    FindEmp();
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("查找失败！");
+            //}
+        }
+
+        private void CB_EmpStation_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            try
+            {
+                FindEmp();
+            }
+            catch
+            {
+                MessageBox.Show("查找失败！");
+            }
+        }
+
+        private void FormFindEmp_Shown(object sender, EventArgs e)
+        {
+            try
+            {
+                FindEmp();
+            }
+            catch
+            {
+                MessageBox.Show("查找失败！");
             }
         }
     }

@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IntelligentRackConfiguration</RootNamespace>
     <AssemblyName>IntelligentRackConfiguration</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -32,15 +33,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>log.ico</ApplicationIcon>
+    <ApplicationIcon>64_64.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MyOPC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\MyOPC.dll</HintPath>
+      <HintPath>..\..\MutualCheck\MutualCheck\bin\Debug\MyOPC.dll</HintPath>
     </Reference>
-    <Reference Include="MySql">
-      <HintPath>.\MySql.dll</HintPath>
+    <Reference Include="MySql, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\项目\宁德PN校验\PL7 MIS交互\ZZT PLC7 MIS\Reader\bin\Debug\MySql.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,6 +56,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeConfigForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangeConfigForm.Designer.cs">
+      <DependentUpon>ChangeConfigForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConnectionOpcForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +91,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ChangeConfigForm.resx">
+      <DependentUpon>ChangeConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ConnectionOpcForm.resx">
       <DependentUpon>ConnectionOpcForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -103,6 +114,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -118,10 +130,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="322.ico" />
+    <Content Include="64_64.ico" />
     <Content Include="DataBase.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="log.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

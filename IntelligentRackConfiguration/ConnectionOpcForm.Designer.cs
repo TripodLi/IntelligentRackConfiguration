@@ -32,27 +32,23 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnectionOpcForm));
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.STEP_NO = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CATEGORY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.NAME = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MATERIALSHELF_NO = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.GUN_NO = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PROGRAME_NO = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MATERIAL_NUMBER = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FEATURE_CODE = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.REWORK_TIMES = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SLEEVE_NO = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PHOTO_NO = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRODUCTION_NAME = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TB_ShowLog = new System.Windows.Forms.RichTextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.LB_Beat = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(598, 12);
+            this.button1.Location = new System.Drawing.Point(670, 55);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
@@ -62,123 +58,109 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.dataGridView1);
-            this.panel1.Location = new System.Drawing.Point(12, 53);
+            this.panel1.Controls.Add(this.TB_ShowLog);
+            this.panel1.Location = new System.Drawing.Point(12, 85);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(661, 270);
+            this.panel1.Size = new System.Drawing.Size(736, 365);
             this.panel1.TabIndex = 1;
             // 
-            // dataGridView1
+            // TB_ShowLog
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.STEP_NO,
-            this.CATEGORY,
-            this.NAME,
-            this.MATERIALSHELF_NO,
-            this.GUN_NO,
-            this.PROGRAME_NO,
-            this.MATERIAL_NUMBER,
-            this.FEATURE_CODE,
-            this.REWORK_TIMES,
-            this.SLEEVE_NO,
-            this.PHOTO_NO,
-            this.PRODUCTION_NAME});
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(661, 267);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
+            this.TB_ShowLog.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TB_ShowLog.Location = new System.Drawing.Point(3, 3);
+            this.TB_ShowLog.Name = "TB_ShowLog";
+            this.TB_ShowLog.Size = new System.Drawing.Size(730, 359);
+            this.TB_ShowLog.TabIndex = 2;
+            this.TB_ShowLog.Text = "";
             // 
-            // STEP_NO
+            // label1
             // 
-            this.STEP_NO.DataPropertyName = "STEP_NO";
-            this.STEP_NO.HeaderText = "步序";
-            this.STEP_NO.Name = "STEP_NO";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 60);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "心跳：";
             // 
-            // CATEGORY
+            // panel2
             // 
-            this.CATEGORY.DataPropertyName = "CATEGORY";
-            this.CATEGORY.HeaderText = "类别";
-            this.CATEGORY.Name = "CATEGORY";
+            this.panel2.BackColor = System.Drawing.Color.Olive;
+            this.panel2.Location = new System.Drawing.Point(59, 47);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(39, 31);
+            this.panel2.TabIndex = 3;
             // 
-            // NAME
+            // LB_Beat
             // 
-            this.NAME.DataPropertyName = "NAME";
-            this.NAME.HeaderText = "名称";
-            this.NAME.Name = "NAME";
+            this.LB_Beat.AutoSize = true;
+            this.LB_Beat.Location = new System.Drawing.Point(154, 23);
+            this.LB_Beat.Name = "LB_Beat";
+            this.LB_Beat.Size = new System.Drawing.Size(0, 12);
+            this.LB_Beat.TabIndex = 4;
             // 
-            // MATERIALSHELF_NO
+            // label2
             // 
-            this.MATERIALSHELF_NO.DataPropertyName = "MATERIALSHELF_NO";
-            this.MATERIALSHELF_NO.HeaderText = "料格号";
-            this.MATERIALSHELF_NO.Name = "MATERIALSHELF_NO";
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("宋体", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.Location = new System.Drawing.Point(311, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(153, 29);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "监 听 OPC";
             // 
-            // GUN_NO
+            // notifyIcon1
             // 
-            this.GUN_NO.DataPropertyName = "GUN_NO";
-            this.GUN_NO.HeaderText = "枪号";
-            this.GUN_NO.Name = "GUN_NO";
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
             // 
-            // PROGRAME_NO
+            // contextMenuStrip1
             // 
-            this.PROGRAME_NO.DataPropertyName = "PROGRAME_NO";
-            this.PROGRAME_NO.HeaderText = "程序号";
-            this.PROGRAME_NO.Name = "PROGRAME_NO";
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(125, 48);
             // 
-            // MATERIAL_NUMBER
+            // toolStripMenuItem1
             // 
-            this.MATERIAL_NUMBER.DataPropertyName = "MATERIAL_NUMBER";
-            this.MATERIAL_NUMBER.HeaderText = "数量";
-            this.MATERIAL_NUMBER.Name = "MATERIAL_NUMBER";
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItem1.Text = "显示窗体";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
-            // FEATURE_CODE
+            // toolStripMenuItem2
             // 
-            this.FEATURE_CODE.DataPropertyName = "FEATURE_CODE";
-            this.FEATURE_CODE.HeaderText = "特征码";
-            this.FEATURE_CODE.Name = "FEATURE_CODE";
-            // 
-            // REWORK_TIMES
-            // 
-            this.REWORK_TIMES.DataPropertyName = "REWORK_TIMES";
-            this.REWORK_TIMES.HeaderText = "返工次数";
-            this.REWORK_TIMES.Name = "REWORK_TIMES";
-            // 
-            // SLEEVE_NO
-            // 
-            this.SLEEVE_NO.DataPropertyName = "SLEEVE_NO";
-            this.SLEEVE_NO.HeaderText = "套筒号";
-            this.SLEEVE_NO.Name = "SLEEVE_NO";
-            // 
-            // PHOTO_NO
-            // 
-            this.PHOTO_NO.DataPropertyName = "PHOTO_NO";
-            this.PHOTO_NO.HeaderText = "相机号";
-            this.PHOTO_NO.Name = "PHOTO_NO";
-            // 
-            // PRODUCTION_NAME
-            // 
-            this.PRODUCTION_NAME.DataPropertyName = "PRODUCTION_NAME";
-            this.PRODUCTION_NAME.HeaderText = "产品名称";
-            this.PRODUCTION_NAME.Name = "PRODUCTION_NAME";
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItem2.Text = "关闭";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
             // ConnectionOpcForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(685, 335);
+            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.ClientSize = new System.Drawing.Size(760, 462);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.LB_Beat);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ConnectionOpcForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "监听OPC";
             this.Load += new System.EventHandler(this.ConnectionOpcForm_Load);
             this.Shown += new System.EventHandler(this.ConnectionOpcForm_Shown);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ConnectionOpcForm_MouseDown);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -186,19 +168,15 @@
 
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn STEP_NO;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CATEGORY;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NAME;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MATERIALSHELF_NO;
-        private System.Windows.Forms.DataGridViewTextBoxColumn GUN_NO;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PROGRAME_NO;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MATERIAL_NUMBER;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FEATURE_CODE;
-        private System.Windows.Forms.DataGridViewTextBoxColumn REWORK_TIMES;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SLEEVE_NO;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PHOTO_NO;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PRODUCTION_NAME;
+        private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.Panel panel2;
+        public System.Windows.Forms.Label LB_Beat;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        public System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.RichTextBox TB_ShowLog;
     }
 }
