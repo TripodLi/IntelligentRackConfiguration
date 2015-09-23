@@ -32,6 +32,23 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChangeConfigForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.StepNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Category = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Desc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MaterialShelfNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.GunNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ProgrameNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Number = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FeatureCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SleeveNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PhotoNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Rework_Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.INTELLIGENTRACK_DATAIL_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.INTELLIGENTRACK_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRODUCTION_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FEERACK_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.production_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PORDUCTION_TYPE = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.刷新ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TB_ProductionName = new System.Windows.Forms.TextBox();
@@ -74,34 +91,17 @@
             this.Reworkpanel = new System.Windows.Forms.Panel();
             this.TB_ReworkTimes = new System.Windows.Forms.TextBox();
             this.LB_ReworkTimes = new System.Windows.Forms.Label();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.anthername = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.StepNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Category = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Desc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MaterialShelfNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.GunNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ProgrameNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Number = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FeatureCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SleeveNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PhotoNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Rework_Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.INTELLIGENTRACK_DATAIL_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.INTELLIGENTRACK_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRODUCTION_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FEERACK_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.production_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PORDUCTION_TYPE = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.anthername = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip2.SuspendLayout();
@@ -114,12 +114,12 @@
             this.FeatureCodepanel.SuspendLayout();
             this.PhotoNopanel.SuspendLayout();
             this.Reworkpanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -166,6 +166,125 @@
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
             this.dataGridView1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView1_RowsRemoved);
+            // 
+            // StepNo
+            // 
+            this.StepNo.DataPropertyName = "STEP_NO";
+            this.StepNo.HeaderText = "步序";
+            this.StepNo.Name = "StepNo";
+            this.StepNo.ReadOnly = true;
+            // 
+            // Category
+            // 
+            this.Category.DataPropertyName = "CATEGORY";
+            this.Category.HeaderText = "类别";
+            this.Category.Name = "Category";
+            this.Category.ReadOnly = true;
+            // 
+            // Desc
+            // 
+            this.Desc.DataPropertyName = "NAME";
+            this.Desc.HeaderText = "名称";
+            this.Desc.Name = "Desc";
+            this.Desc.ReadOnly = true;
+            // 
+            // MaterialShelfNo
+            // 
+            this.MaterialShelfNo.DataPropertyName = "MATERIALSHELF_NO";
+            this.MaterialShelfNo.HeaderText = "料格号";
+            this.MaterialShelfNo.Name = "MaterialShelfNo";
+            this.MaterialShelfNo.ReadOnly = true;
+            // 
+            // GunNo
+            // 
+            this.GunNo.DataPropertyName = "GUN_NO";
+            this.GunNo.HeaderText = "枪号";
+            this.GunNo.Name = "GunNo";
+            this.GunNo.ReadOnly = true;
+            // 
+            // ProgrameNo
+            // 
+            this.ProgrameNo.DataPropertyName = "PROGRAME_NO";
+            this.ProgrameNo.HeaderText = "程序号";
+            this.ProgrameNo.Name = "ProgrameNo";
+            this.ProgrameNo.ReadOnly = true;
+            // 
+            // Number
+            // 
+            this.Number.DataPropertyName = "MATERIAL_NUMBER";
+            this.Number.HeaderText = "数量";
+            this.Number.Name = "Number";
+            this.Number.ReadOnly = true;
+            // 
+            // FeatureCode
+            // 
+            this.FeatureCode.DataPropertyName = "FEATURE_CODE";
+            this.FeatureCode.HeaderText = "特征码";
+            this.FeatureCode.Name = "FeatureCode";
+            this.FeatureCode.ReadOnly = true;
+            // 
+            // SleeveNo
+            // 
+            this.SleeveNo.DataPropertyName = "SLEEVE_NO";
+            this.SleeveNo.HeaderText = "套筒号";
+            this.SleeveNo.Name = "SleeveNo";
+            this.SleeveNo.ReadOnly = true;
+            // 
+            // PhotoNo
+            // 
+            this.PhotoNo.DataPropertyName = "PHOTO_NO";
+            this.PhotoNo.HeaderText = "相机号";
+            this.PhotoNo.Name = "PhotoNo";
+            this.PhotoNo.ReadOnly = true;
+            // 
+            // Rework_Time
+            // 
+            this.Rework_Time.DataPropertyName = "REWORK_TIMES";
+            this.Rework_Time.HeaderText = "返工次数";
+            this.Rework_Time.Name = "Rework_Time";
+            this.Rework_Time.ReadOnly = true;
+            // 
+            // INTELLIGENTRACK_DATAIL_ID
+            // 
+            this.INTELLIGENTRACK_DATAIL_ID.DataPropertyName = "INTELLIGENTRACK_DETAIL_ID";
+            this.INTELLIGENTRACK_DATAIL_ID.HeaderText = "配置明细ID";
+            this.INTELLIGENTRACK_DATAIL_ID.Name = "INTELLIGENTRACK_DATAIL_ID";
+            this.INTELLIGENTRACK_DATAIL_ID.ReadOnly = true;
+            // 
+            // INTELLIGENTRACK_ID
+            // 
+            this.INTELLIGENTRACK_ID.DataPropertyName = "INTELLIGENTRACK_ID";
+            this.INTELLIGENTRACK_ID.HeaderText = "配置ID";
+            this.INTELLIGENTRACK_ID.Name = "INTELLIGENTRACK_ID";
+            this.INTELLIGENTRACK_ID.ReadOnly = true;
+            // 
+            // PRODUCTION_ID
+            // 
+            this.PRODUCTION_ID.DataPropertyName = "PRODUCTION_ID";
+            this.PRODUCTION_ID.HeaderText = "产品ID";
+            this.PRODUCTION_ID.Name = "PRODUCTION_ID";
+            this.PRODUCTION_ID.ReadOnly = true;
+            // 
+            // FEERACK_ID
+            // 
+            this.FEERACK_ID.DataPropertyName = "FEERACK_ID";
+            this.FEERACK_ID.HeaderText = "料架ID";
+            this.FEERACK_ID.Name = "FEERACK_ID";
+            this.FEERACK_ID.ReadOnly = true;
+            // 
+            // production_name
+            // 
+            this.production_name.DataPropertyName = "PRODUCTION_NAME";
+            this.production_name.HeaderText = "产品名称";
+            this.production_name.Name = "production_name";
+            this.production_name.ReadOnly = true;
+            // 
+            // PORDUCTION_TYPE
+            // 
+            this.PORDUCTION_TYPE.DataPropertyName = "PRODUCTION_TYPE";
+            this.PORDUCTION_TYPE.HeaderText = "产品类型";
+            this.PORDUCTION_TYPE.Name = "PORDUCTION_TYPE";
+            this.PORDUCTION_TYPE.ReadOnly = true;
             // 
             // contextMenuStrip2
             // 
@@ -226,7 +345,13 @@
             "1.扫描",
             "2.拧紧",
             "3.照相",
-            "4.END"});
+            "4.备用",
+            "5.备用",
+            "6.备用",
+            "7.备用",
+            "8.备用",
+            "9.备用",
+            "10.END"});
             this.CB_Category.Location = new System.Drawing.Point(22, 283);
             this.CB_Category.Name = "CB_Category";
             this.CB_Category.Size = new System.Drawing.Size(159, 20);
@@ -692,6 +817,17 @@
             this.LB_ReworkTimes.TabIndex = 0;
             this.LB_ReworkTimes.Text = "返工次数：";
             // 
+            // pictureBox6
+            // 
+            this.pictureBox6.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
+            this.pictureBox6.Location = new System.Drawing.Point(3, 436);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(55, 28);
+            this.pictureBox6.TabIndex = 76;
+            this.pictureBox6.TabStop = false;
+            this.pictureBox6.Click += new System.EventHandler(this.pictureBox6_Click);
+            // 
             // button1
             // 
             this.button1.AllowDrop = true;
@@ -752,13 +888,6 @@
             this.label4.TabIndex = 69;
             this.label4.Text = "料 架 配 置";
             // 
-            // anthername
-            // 
-            this.anthername.Location = new System.Drawing.Point(78, 110);
-            this.anthername.Name = "anthername";
-            this.anthername.Size = new System.Drawing.Size(101, 21);
-            this.anthername.TabIndex = 70;
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -768,125 +897,6 @@
             this.label6.Size = new System.Drawing.Size(41, 12);
             this.label6.TabIndex = 71;
             this.label6.Text = "别 名:";
-            // 
-            // StepNo
-            // 
-            this.StepNo.DataPropertyName = "STEP_NO";
-            this.StepNo.HeaderText = "步序";
-            this.StepNo.Name = "StepNo";
-            this.StepNo.ReadOnly = true;
-            // 
-            // Category
-            // 
-            this.Category.DataPropertyName = "CATEGORY";
-            this.Category.HeaderText = "类别";
-            this.Category.Name = "Category";
-            this.Category.ReadOnly = true;
-            // 
-            // Desc
-            // 
-            this.Desc.DataPropertyName = "NAME";
-            this.Desc.HeaderText = "名称";
-            this.Desc.Name = "Desc";
-            this.Desc.ReadOnly = true;
-            // 
-            // MaterialShelfNo
-            // 
-            this.MaterialShelfNo.DataPropertyName = "MATERIALSHELF_NO";
-            this.MaterialShelfNo.HeaderText = "料格号";
-            this.MaterialShelfNo.Name = "MaterialShelfNo";
-            this.MaterialShelfNo.ReadOnly = true;
-            // 
-            // GunNo
-            // 
-            this.GunNo.DataPropertyName = "GUN_NO";
-            this.GunNo.HeaderText = "枪号";
-            this.GunNo.Name = "GunNo";
-            this.GunNo.ReadOnly = true;
-            // 
-            // ProgrameNo
-            // 
-            this.ProgrameNo.DataPropertyName = "PROGRAME_NO";
-            this.ProgrameNo.HeaderText = "程序号";
-            this.ProgrameNo.Name = "ProgrameNo";
-            this.ProgrameNo.ReadOnly = true;
-            // 
-            // Number
-            // 
-            this.Number.DataPropertyName = "MATERIAL_NUMBER";
-            this.Number.HeaderText = "数量";
-            this.Number.Name = "Number";
-            this.Number.ReadOnly = true;
-            // 
-            // FeatureCode
-            // 
-            this.FeatureCode.DataPropertyName = "FEATURE_CODE";
-            this.FeatureCode.HeaderText = "特征码";
-            this.FeatureCode.Name = "FeatureCode";
-            this.FeatureCode.ReadOnly = true;
-            // 
-            // SleeveNo
-            // 
-            this.SleeveNo.DataPropertyName = "SLEEVE_NO";
-            this.SleeveNo.HeaderText = "套筒号";
-            this.SleeveNo.Name = "SleeveNo";
-            this.SleeveNo.ReadOnly = true;
-            // 
-            // PhotoNo
-            // 
-            this.PhotoNo.DataPropertyName = "PHOTO_NO";
-            this.PhotoNo.HeaderText = "相机号";
-            this.PhotoNo.Name = "PhotoNo";
-            this.PhotoNo.ReadOnly = true;
-            // 
-            // Rework_Time
-            // 
-            this.Rework_Time.DataPropertyName = "REWORK_TIMES";
-            this.Rework_Time.HeaderText = "返工次数";
-            this.Rework_Time.Name = "Rework_Time";
-            this.Rework_Time.ReadOnly = true;
-            // 
-            // INTELLIGENTRACK_DATAIL_ID
-            // 
-            this.INTELLIGENTRACK_DATAIL_ID.DataPropertyName = "INTELLIGENTRACK_DETAIL_ID";
-            this.INTELLIGENTRACK_DATAIL_ID.HeaderText = "配置明细ID";
-            this.INTELLIGENTRACK_DATAIL_ID.Name = "INTELLIGENTRACK_DATAIL_ID";
-            this.INTELLIGENTRACK_DATAIL_ID.ReadOnly = true;
-            // 
-            // INTELLIGENTRACK_ID
-            // 
-            this.INTELLIGENTRACK_ID.DataPropertyName = "INTELLIGENTRACK_ID";
-            this.INTELLIGENTRACK_ID.HeaderText = "配置ID";
-            this.INTELLIGENTRACK_ID.Name = "INTELLIGENTRACK_ID";
-            this.INTELLIGENTRACK_ID.ReadOnly = true;
-            // 
-            // PRODUCTION_ID
-            // 
-            this.PRODUCTION_ID.DataPropertyName = "PRODUCTION_ID";
-            this.PRODUCTION_ID.HeaderText = "产品ID";
-            this.PRODUCTION_ID.Name = "PRODUCTION_ID";
-            this.PRODUCTION_ID.ReadOnly = true;
-            // 
-            // FEERACK_ID
-            // 
-            this.FEERACK_ID.DataPropertyName = "FEERACK_ID";
-            this.FEERACK_ID.HeaderText = "料架ID";
-            this.FEERACK_ID.Name = "FEERACK_ID";
-            this.FEERACK_ID.ReadOnly = true;
-            // 
-            // production_name
-            // 
-            this.production_name.DataPropertyName = "PRODUCTION_NAME";
-            this.production_name.HeaderText = "产品名称";
-            this.production_name.Name = "production_name";
-            this.production_name.ReadOnly = true;
-            // 
-            // PORDUCTION_TYPE
-            // 
-            this.PORDUCTION_TYPE.DataPropertyName = "PRODUCTION_TYPE";
-            this.PORDUCTION_TYPE.HeaderText = "产品类型";
-            this.PORDUCTION_TYPE.Name = "PORDUCTION_TYPE";
-            this.PORDUCTION_TYPE.ReadOnly = true;
             // 
             // pictureBox4
             // 
@@ -908,16 +918,14 @@
             this.pictureBox5.TabStop = false;
             this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
             // 
-            // pictureBox6
+            // anthername
             // 
-            this.pictureBox6.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
-            this.pictureBox6.Location = new System.Drawing.Point(3, 436);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(55, 28);
-            this.pictureBox6.TabIndex = 76;
-            this.pictureBox6.TabStop = false;
-            this.pictureBox6.Click += new System.EventHandler(this.pictureBox6_Click);
+            this.anthername.AutoSize = true;
+            this.anthername.Location = new System.Drawing.Point(76, 113);
+            this.anthername.Name = "anthername";
+            this.anthername.Size = new System.Drawing.Size(41, 12);
+            this.anthername.TabIndex = 76;
+            this.anthername.Text = "label7";
             // 
             // ChangeConfigForm
             // 
@@ -925,11 +933,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(933, 667);
+            this.Controls.Add(this.anthername);
             this.Controls.Add(this.pictureBox5);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.anthername);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.pictureBox2);
@@ -978,12 +986,12 @@
             this.PhotoNopanel.PerformLayout();
             this.Reworkpanel.ResumeLayout(false);
             this.Reworkpanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1041,7 +1049,6 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox anthername;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.DataGridViewTextBoxColumn StepNo;
         private System.Windows.Forms.DataGridViewTextBoxColumn Category;
@@ -1063,5 +1070,6 @@
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.PictureBox pictureBox6;
+        private System.Windows.Forms.Label anthername;
     }
 }

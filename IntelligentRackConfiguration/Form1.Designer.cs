@@ -74,8 +74,10 @@ namespace IntelligentRackConfiguration
             this.TB_ProductionName = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.增加员工ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.修改员工ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.料架管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.员工管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.增加员工ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.查询员工ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
@@ -83,7 +85,6 @@ namespace IntelligentRackConfiguration
             this.label7 = new System.Windows.Forms.Label();
             this.BT_Eidit = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
-            this.anthername = new System.Windows.Forms.TextBox();
             this.LB_StepNo = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.CB_StepNo = new System.Windows.Forms.ComboBox();
@@ -123,6 +124,7 @@ namespace IntelligentRackConfiguration
             this.BT_MaterialCancel = new System.Windows.Forms.Button();
             this.BT_Cancel = new System.Windows.Forms.Button();
             this.TB_VIEW1_CANEL = new System.Windows.Forms.Button();
+            this.anthername = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -145,7 +147,7 @@ namespace IntelligentRackConfiguration
             // LB_Station
             // 
             this.LB_Station.AutoSize = true;
-            this.LB_Station.Location = new System.Drawing.Point(13, 93);
+            this.LB_Station.Location = new System.Drawing.Point(13, 96);
             this.LB_Station.Name = "LB_Station";
             this.LB_Station.Size = new System.Drawing.Size(53, 12);
             this.LB_Station.TabIndex = 1;
@@ -155,7 +157,7 @@ namespace IntelligentRackConfiguration
             // 
             this.CB_Station.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CB_Station.FormattingEnabled = true;
-            this.CB_Station.Location = new System.Drawing.Point(71, 90);
+            this.CB_Station.Location = new System.Drawing.Point(71, 93);
             this.CB_Station.Name = "CB_Station";
             this.CB_Station.Size = new System.Drawing.Size(121, 20);
             this.CB_Station.TabIndex = 2;
@@ -176,7 +178,7 @@ namespace IntelligentRackConfiguration
             // LB_MaterialNo
             // 
             this.LB_MaterialNo.AutoSize = true;
-            this.LB_MaterialNo.Location = new System.Drawing.Point(12, 160);
+            this.LB_MaterialNo.Location = new System.Drawing.Point(13, 156);
             this.LB_MaterialNo.Name = "LB_MaterialNo";
             this.LB_MaterialNo.Size = new System.Drawing.Size(65, 12);
             this.LB_MaterialNo.TabIndex = 7;
@@ -207,7 +209,7 @@ namespace IntelligentRackConfiguration
             "产品18",
             "产品19",
             "产品20"});
-            this.CB_MaterialNo.Location = new System.Drawing.Point(71, 158);
+            this.CB_MaterialNo.Location = new System.Drawing.Point(71, 153);
             this.CB_MaterialNo.Name = "CB_MaterialNo";
             this.CB_MaterialNo.Size = new System.Drawing.Size(121, 20);
             this.CB_MaterialNo.TabIndex = 8;
@@ -501,7 +503,7 @@ namespace IntelligentRackConfiguration
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 195);
+            this.label5.Location = new System.Drawing.Point(13, 186);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(65, 12);
             this.label5.TabIndex = 44;
@@ -509,7 +511,7 @@ namespace IntelligentRackConfiguration
             // 
             // TB_ProductionName
             // 
-            this.TB_ProductionName.Location = new System.Drawing.Point(71, 192);
+            this.TB_ProductionName.Location = new System.Drawing.Point(71, 183);
             this.TB_ProductionName.MaxLength = 36;
             this.TB_ProductionName.Name = "TB_ProductionName";
             this.TB_ProductionName.Size = new System.Drawing.Size(121, 21);
@@ -529,24 +531,40 @@ namespace IntelligentRackConfiguration
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.增加员工ToolStripMenuItem1,
-            this.修改员工ToolStripMenuItem});
+            this.料架管理ToolStripMenuItem,
+            this.员工管理ToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(125, 48);
             // 
-            // 增加员工ToolStripMenuItem1
+            // 料架管理ToolStripMenuItem
             // 
-            this.增加员工ToolStripMenuItem1.Name = "增加员工ToolStripMenuItem1";
-            this.增加员工ToolStripMenuItem1.Size = new System.Drawing.Size(124, 22);
-            this.增加员工ToolStripMenuItem1.Text = "增加员工";
-            this.增加员工ToolStripMenuItem1.Click += new System.EventHandler(this.增加员工ToolStripMenuItem1_Click);
+            this.料架管理ToolStripMenuItem.Name = "料架管理ToolStripMenuItem";
+            this.料架管理ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.料架管理ToolStripMenuItem.Text = "料架管理";
+            this.料架管理ToolStripMenuItem.Click += new System.EventHandler(this.料架管理ToolStripMenuItem_Click);
             // 
-            // 修改员工ToolStripMenuItem
+            // 员工管理ToolStripMenuItem
             // 
-            this.修改员工ToolStripMenuItem.Name = "修改员工ToolStripMenuItem";
-            this.修改员工ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.修改员工ToolStripMenuItem.Text = "查询员工";
-            this.修改员工ToolStripMenuItem.Click += new System.EventHandler(this.查询员工ToolStripMenuItem_Click);
+            this.员工管理ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.增加员工ToolStripMenuItem,
+            this.查询员工ToolStripMenuItem});
+            this.员工管理ToolStripMenuItem.Name = "员工管理ToolStripMenuItem";
+            this.员工管理ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.员工管理ToolStripMenuItem.Text = "员工管理";
+            // 
+            // 增加员工ToolStripMenuItem
+            // 
+            this.增加员工ToolStripMenuItem.Name = "增加员工ToolStripMenuItem";
+            this.增加员工ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.增加员工ToolStripMenuItem.Text = "增加员工";
+            this.增加员工ToolStripMenuItem.Click += new System.EventHandler(this.增加员工ToolStripMenuItem_Click);
+            // 
+            // 查询员工ToolStripMenuItem
+            // 
+            this.查询员工ToolStripMenuItem.Name = "查询员工ToolStripMenuItem";
+            this.查询员工ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.查询员工ToolStripMenuItem.Text = "查询员工";
+            this.查询员工ToolStripMenuItem.Click += new System.EventHandler(this.查询员工ToolStripMenuItem_Click);
             // 
             // pictureBox2
             // 
@@ -609,23 +627,16 @@ namespace IntelligentRackConfiguration
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 125);
+            this.label8.Location = new System.Drawing.Point(13, 126);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(41, 12);
             this.label8.TabIndex = 54;
             this.label8.Text = "别 名:";
             // 
-            // anthername
-            // 
-            this.anthername.Location = new System.Drawing.Point(71, 122);
-            this.anthername.Name = "anthername";
-            this.anthername.Size = new System.Drawing.Size(121, 21);
-            this.anthername.TabIndex = 55;
-            // 
             // LB_StepNo
             // 
             this.LB_StepNo.AutoSize = true;
-            this.LB_StepNo.Location = new System.Drawing.Point(12, 224);
+            this.LB_StepNo.Location = new System.Drawing.Point(13, 216);
             this.LB_StepNo.Name = "LB_StepNo";
             this.LB_StepNo.Size = new System.Drawing.Size(41, 12);
             this.LB_StepNo.TabIndex = 9;
@@ -635,7 +646,7 @@ namespace IntelligentRackConfiguration
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("宋体", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(47, 225);
+            this.label1.Location = new System.Drawing.Point(47, 216);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(135, 10);
             this.label1.TabIndex = 10;
@@ -696,15 +707,15 @@ namespace IntelligentRackConfiguration
             "48",
             "49",
             "50"});
-            this.CB_StepNo.Location = new System.Drawing.Point(14, 248);
+            this.CB_StepNo.Location = new System.Drawing.Point(13, 236);
             this.CB_StepNo.Name = "CB_StepNo";
-            this.CB_StepNo.Size = new System.Drawing.Size(179, 20);
+            this.CB_StepNo.Size = new System.Drawing.Size(176, 20);
             this.CB_StepNo.TabIndex = 11;
             // 
             // LB_Category
             // 
             this.LB_Category.AutoSize = true;
-            this.LB_Category.Location = new System.Drawing.Point(14, 271);
+            this.LB_Category.Location = new System.Drawing.Point(13, 267);
             this.LB_Category.Name = "LB_Category";
             this.LB_Category.Size = new System.Drawing.Size(41, 12);
             this.LB_Category.TabIndex = 12;
@@ -714,7 +725,7 @@ namespace IntelligentRackConfiguration
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("宋体", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(47, 272);
+            this.label2.Location = new System.Drawing.Point(47, 268);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 10);
             this.label2.TabIndex = 13;
@@ -729,10 +740,16 @@ namespace IntelligentRackConfiguration
             "1.扫描",
             "2.拧紧",
             "3.照相",
-            "4.END"});
-            this.CB_Category.Location = new System.Drawing.Point(15, 295);
+            "4.压装",
+            "5.备用",
+            "6.备用",
+            "7.备用",
+            "8.备用",
+            "9.备用",
+            "10.END"});
+            this.CB_Category.Location = new System.Drawing.Point(13, 287);
             this.CB_Category.Name = "CB_Category";
-            this.CB_Category.Size = new System.Drawing.Size(179, 20);
+            this.CB_Category.Size = new System.Drawing.Size(176, 20);
             this.CB_Category.TabIndex = 14;
             this.CB_Category.SelectedIndexChanged += new System.EventHandler(this.CB_Category_SelectedIndexChanged);
             // 
@@ -757,10 +774,10 @@ namespace IntelligentRackConfiguration
             // 
             // TB_MaterialName
             // 
-            this.TB_MaterialName.Location = new System.Drawing.Point(14, 339);
+            this.TB_MaterialName.Location = new System.Drawing.Point(13, 339);
             this.TB_MaterialName.MaxLength = 98;
             this.TB_MaterialName.Name = "TB_MaterialName";
-            this.TB_MaterialName.Size = new System.Drawing.Size(179, 21);
+            this.TB_MaterialName.Size = new System.Drawing.Size(176, 21);
             this.TB_MaterialName.TabIndex = 17;
             this.TB_MaterialName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TB_MaterialName_KeyDown);
             this.TB_MaterialName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TB_MaterialName_KeyPress);
@@ -768,7 +785,7 @@ namespace IntelligentRackConfiguration
             // BT_StepSubmit
             // 
             this.BT_StepSubmit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.BT_StepSubmit.Location = new System.Drawing.Point(3, 436);
+            this.BT_StepSubmit.Location = new System.Drawing.Point(3, 427);
             this.BT_StepSubmit.Name = "BT_StepSubmit";
             this.BT_StepSubmit.Size = new System.Drawing.Size(75, 23);
             this.BT_StepSubmit.TabIndex = 30;
@@ -780,18 +797,18 @@ namespace IntelligentRackConfiguration
             // 
             this.Reworkpanel.Controls.Add(this.TB_ReworkTimes);
             this.Reworkpanel.Controls.Add(this.LB_ReworkTimes);
-            this.Reworkpanel.Location = new System.Drawing.Point(2, 389);
+            this.Reworkpanel.Location = new System.Drawing.Point(2, 374);
             this.Reworkpanel.Margin = new System.Windows.Forms.Padding(2, 3, 3, 3);
             this.Reworkpanel.Name = "Reworkpanel";
-            this.Reworkpanel.Size = new System.Drawing.Size(181, 41);
+            this.Reworkpanel.Size = new System.Drawing.Size(176, 47);
             this.Reworkpanel.TabIndex = 46;
             // 
             // TB_ReworkTimes
             // 
-            this.TB_ReworkTimes.Location = new System.Drawing.Point(-2, 23);
+            this.TB_ReworkTimes.Location = new System.Drawing.Point(1, 23);
             this.TB_ReworkTimes.Margin = new System.Windows.Forms.Padding(1, 3, 3, 3);
             this.TB_ReworkTimes.Name = "TB_ReworkTimes";
-            this.TB_ReworkTimes.Size = new System.Drawing.Size(183, 21);
+            this.TB_ReworkTimes.Size = new System.Drawing.Size(176, 21);
             this.TB_ReworkTimes.TabIndex = 1;
             this.TB_ReworkTimes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TB_ReworkTimes_KeyDown);
             this.TB_ReworkTimes.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TB_ReworkTimes_KeyPress);
@@ -799,7 +816,7 @@ namespace IntelligentRackConfiguration
             // LB_ReworkTimes
             // 
             this.LB_ReworkTimes.AutoSize = true;
-            this.LB_ReworkTimes.Location = new System.Drawing.Point(3, 8);
+            this.LB_ReworkTimes.Location = new System.Drawing.Point(1, 4);
             this.LB_ReworkTimes.Name = "LB_ReworkTimes";
             this.LB_ReworkTimes.Size = new System.Drawing.Size(65, 12);
             this.LB_ReworkTimes.TabIndex = 0;
@@ -809,7 +826,7 @@ namespace IntelligentRackConfiguration
             // 
             this.PhotoNopanel.Controls.Add(this.CB_PhotoNo);
             this.PhotoNopanel.Controls.Add(this.LB_PhotoNo);
-            this.PhotoNopanel.Location = new System.Drawing.Point(3, 336);
+            this.PhotoNopanel.Location = new System.Drawing.Point(3, 321);
             this.PhotoNopanel.Name = "PhotoNopanel";
             this.PhotoNopanel.Size = new System.Drawing.Size(176, 47);
             this.PhotoNopanel.TabIndex = 6;
@@ -824,16 +841,16 @@ namespace IntelligentRackConfiguration
             this.CB_PhotoNo.Items.AddRange(new object[] {
             "1号相机",
             "2号相机"});
-            this.CB_PhotoNo.Location = new System.Drawing.Point(-2, 24);
+            this.CB_PhotoNo.Location = new System.Drawing.Point(1, 24);
             this.CB_PhotoNo.Name = "CB_PhotoNo";
-            this.CB_PhotoNo.Size = new System.Drawing.Size(178, 20);
+            this.CB_PhotoNo.Size = new System.Drawing.Size(176, 20);
             this.CB_PhotoNo.TabIndex = 43;
             // 
             // LB_PhotoNo
             // 
             this.LB_PhotoNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LB_PhotoNo.AutoSize = true;
-            this.LB_PhotoNo.Location = new System.Drawing.Point(3, 9);
+            this.LB_PhotoNo.Location = new System.Drawing.Point(1, 4);
             this.LB_PhotoNo.Name = "LB_PhotoNo";
             this.LB_PhotoNo.Size = new System.Drawing.Size(53, 12);
             this.LB_PhotoNo.TabIndex = 42;
@@ -843,16 +860,16 @@ namespace IntelligentRackConfiguration
             // 
             this.FeatureCodepanel.Controls.Add(this.LB_FeatureCode);
             this.FeatureCodepanel.Controls.Add(this.TB_FeatureCode);
-            this.FeatureCodepanel.Location = new System.Drawing.Point(3, 285);
+            this.FeatureCodepanel.Location = new System.Drawing.Point(3, 268);
             this.FeatureCodepanel.Name = "FeatureCodepanel";
-            this.FeatureCodepanel.Size = new System.Drawing.Size(178, 45);
+            this.FeatureCodepanel.Size = new System.Drawing.Size(176, 47);
             this.FeatureCodepanel.TabIndex = 4;
             // 
             // LB_FeatureCode
             // 
             this.LB_FeatureCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LB_FeatureCode.AutoSize = true;
-            this.LB_FeatureCode.Location = new System.Drawing.Point(-2, 0);
+            this.LB_FeatureCode.Location = new System.Drawing.Point(1, 5);
             this.LB_FeatureCode.Name = "LB_FeatureCode";
             this.LB_FeatureCode.Size = new System.Drawing.Size(53, 12);
             this.LB_FeatureCode.TabIndex = 24;
@@ -864,9 +881,9 @@ namespace IntelligentRackConfiguration
             this.TB_FeatureCode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TB_FeatureCode.Location = new System.Drawing.Point(0, 24);
+            this.TB_FeatureCode.Location = new System.Drawing.Point(1, 24);
             this.TB_FeatureCode.Name = "TB_FeatureCode";
-            this.TB_FeatureCode.Size = new System.Drawing.Size(178, 21);
+            this.TB_FeatureCode.Size = new System.Drawing.Size(176, 21);
             this.TB_FeatureCode.TabIndex = 26;
             this.TB_FeatureCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TB_FeatureCode_KeyDown);
             this.TB_FeatureCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TB_FeatureCode_KeyPress);
@@ -875,9 +892,9 @@ namespace IntelligentRackConfiguration
             // 
             this.Programpanel.Controls.Add(this.TB_ProgramNo);
             this.Programpanel.Controls.Add(this.LB_ProgramNo);
-            this.Programpanel.Location = new System.Drawing.Point(3, 225);
+            this.Programpanel.Location = new System.Drawing.Point(3, 215);
             this.Programpanel.Name = "Programpanel";
-            this.Programpanel.Size = new System.Drawing.Size(176, 54);
+            this.Programpanel.Size = new System.Drawing.Size(176, 47);
             this.Programpanel.TabIndex = 3;
             // 
             // TB_ProgramNo
@@ -885,9 +902,9 @@ namespace IntelligentRackConfiguration
             this.TB_ProgramNo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TB_ProgramNo.Location = new System.Drawing.Point(0, 30);
+            this.TB_ProgramNo.Location = new System.Drawing.Point(1, 23);
             this.TB_ProgramNo.Name = "TB_ProgramNo";
-            this.TB_ProgramNo.Size = new System.Drawing.Size(178, 21);
+            this.TB_ProgramNo.Size = new System.Drawing.Size(176, 21);
             this.TB_ProgramNo.TabIndex = 38;
             this.TB_ProgramNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TB_ProgramNo_KeyDown);
             this.TB_ProgramNo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TB_ProgramNo_KeyPress);
@@ -896,7 +913,7 @@ namespace IntelligentRackConfiguration
             // 
             this.LB_ProgramNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LB_ProgramNo.AutoSize = true;
-            this.LB_ProgramNo.Location = new System.Drawing.Point(-4, 2);
+            this.LB_ProgramNo.Location = new System.Drawing.Point(1, 5);
             this.LB_ProgramNo.Name = "LB_ProgramNo";
             this.LB_ProgramNo.Size = new System.Drawing.Size(53, 12);
             this.LB_ProgramNo.TabIndex = 36;
@@ -906,16 +923,16 @@ namespace IntelligentRackConfiguration
             // 
             this.Gunpanel.Controls.Add(this.LB_GunNo);
             this.Gunpanel.Controls.Add(this.CB_GunNo);
-            this.Gunpanel.Location = new System.Drawing.Point(3, 167);
+            this.Gunpanel.Location = new System.Drawing.Point(3, 162);
             this.Gunpanel.Name = "Gunpanel";
-            this.Gunpanel.Size = new System.Drawing.Size(176, 52);
+            this.Gunpanel.Size = new System.Drawing.Size(176, 47);
             this.Gunpanel.TabIndex = 2;
             // 
             // LB_GunNo
             // 
             this.LB_GunNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LB_GunNo.AutoSize = true;
-            this.LB_GunNo.Location = new System.Drawing.Point(-2, 5);
+            this.LB_GunNo.Location = new System.Drawing.Point(1, 4);
             this.LB_GunNo.Name = "LB_GunNo";
             this.LB_GunNo.Size = new System.Drawing.Size(41, 12);
             this.LB_GunNo.TabIndex = 39;
@@ -933,25 +950,25 @@ namespace IntelligentRackConfiguration
             "2号枪",
             "3号枪",
             "4号枪"});
-            this.CB_GunNo.Location = new System.Drawing.Point(-2, 29);
+            this.CB_GunNo.Location = new System.Drawing.Point(1, 24);
             this.CB_GunNo.Name = "CB_GunNo";
-            this.CB_GunNo.Size = new System.Drawing.Size(178, 20);
+            this.CB_GunNo.Size = new System.Drawing.Size(176, 20);
             this.CB_GunNo.TabIndex = 41;
             // 
             // MaterialNumpanel
             // 
             this.MaterialNumpanel.Controls.Add(this.LB_MaterialNum);
             this.MaterialNumpanel.Controls.Add(this.TB_MaterialNum);
-            this.MaterialNumpanel.Location = new System.Drawing.Point(3, 113);
+            this.MaterialNumpanel.Location = new System.Drawing.Point(3, 109);
             this.MaterialNumpanel.Name = "MaterialNumpanel";
-            this.MaterialNumpanel.Size = new System.Drawing.Size(176, 48);
+            this.MaterialNumpanel.Size = new System.Drawing.Size(176, 47);
             this.MaterialNumpanel.TabIndex = 1;
             // 
             // LB_MaterialNum
             // 
             this.LB_MaterialNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LB_MaterialNum.AutoSize = true;
-            this.LB_MaterialNum.Location = new System.Drawing.Point(-2, 4);
+            this.LB_MaterialNum.Location = new System.Drawing.Point(2, 6);
             this.LB_MaterialNum.Name = "LB_MaterialNum";
             this.LB_MaterialNum.Size = new System.Drawing.Size(41, 12);
             this.LB_MaterialNum.TabIndex = 21;
@@ -962,9 +979,9 @@ namespace IntelligentRackConfiguration
             this.TB_MaterialNum.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TB_MaterialNum.Location = new System.Drawing.Point(-2, 24);
+            this.TB_MaterialNum.Location = new System.Drawing.Point(1, 24);
             this.TB_MaterialNum.Name = "TB_MaterialNum";
-            this.TB_MaterialNum.Size = new System.Drawing.Size(178, 21);
+            this.TB_MaterialNum.Size = new System.Drawing.Size(176, 21);
             this.TB_MaterialNum.TabIndex = 23;
             this.TB_MaterialNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TB_MaterialNum_KeyDown);
             this.TB_MaterialNum.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TB_MaterialNum_KeyPress);
@@ -976,14 +993,14 @@ namespace IntelligentRackConfiguration
             this.MaterialShelfpanel.Location = new System.Drawing.Point(2, 56);
             this.MaterialShelfpanel.Margin = new System.Windows.Forms.Padding(2, 3, 3, 3);
             this.MaterialShelfpanel.Name = "MaterialShelfpanel";
-            this.MaterialShelfpanel.Size = new System.Drawing.Size(176, 51);
+            this.MaterialShelfpanel.Size = new System.Drawing.Size(176, 47);
             this.MaterialShelfpanel.TabIndex = 0;
             // 
             // LB_MaterialShelfNo
             // 
             this.LB_MaterialShelfNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LB_MaterialShelfNo.AutoSize = true;
-            this.LB_MaterialShelfNo.Location = new System.Drawing.Point(-1, 0);
+            this.LB_MaterialShelfNo.Location = new System.Drawing.Point(1, 6);
             this.LB_MaterialShelfNo.Name = "LB_MaterialShelfNo";
             this.LB_MaterialShelfNo.Size = new System.Drawing.Size(53, 12);
             this.LB_MaterialShelfNo.TabIndex = 18;
@@ -1020,10 +1037,34 @@ namespace IntelligentRackConfiguration
             "21号料格",
             "22号料格",
             "23号料格",
-            "24号料格"});
-            this.CB_MaterialShelfNo.Location = new System.Drawing.Point(-2, 28);
+            "24号料格",
+            "25号料格",
+            "26号料格",
+            "27号料格",
+            "28号料格",
+            "29号料格",
+            "30号料格",
+            "31号料格",
+            "32号料格",
+            "33号料格",
+            "34号料格",
+            "35号料格",
+            "36号料格",
+            "37号料格",
+            "38号料格",
+            "39号料格",
+            "40号料格",
+            "41号料格",
+            "42号料格",
+            "43号料格",
+            "44号料格",
+            "45号料格",
+            "46号料格",
+            "47号料格",
+            "48号料格"});
+            this.CB_MaterialShelfNo.Location = new System.Drawing.Point(1, 25);
             this.CB_MaterialShelfNo.Name = "CB_MaterialShelfNo";
-            this.CB_MaterialShelfNo.Size = new System.Drawing.Size(178, 20);
+            this.CB_MaterialShelfNo.Size = new System.Drawing.Size(176, 20);
             this.CB_MaterialShelfNo.TabIndex = 20;
             // 
             // Sleevepanel
@@ -1048,16 +1089,16 @@ namespace IntelligentRackConfiguration
             "2号套筒",
             "3号套筒",
             "4号套筒"});
-            this.TB_SleeveNo.Location = new System.Drawing.Point(0, 25);
+            this.TB_SleeveNo.Location = new System.Drawing.Point(1, 25);
             this.TB_SleeveNo.Name = "TB_SleeveNo";
-            this.TB_SleeveNo.Size = new System.Drawing.Size(178, 20);
+            this.TB_SleeveNo.Size = new System.Drawing.Size(176, 20);
             this.TB_SleeveNo.TabIndex = 35;
             // 
             // LB_SleeveNo
             // 
             this.LB_SleeveNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LB_SleeveNo.AutoSize = true;
-            this.LB_SleeveNo.Location = new System.Drawing.Point(-1, 0);
+            this.LB_SleeveNo.Location = new System.Drawing.Point(1, 4);
             this.LB_SleeveNo.Name = "LB_SleeveNo";
             this.LB_SleeveNo.Size = new System.Drawing.Size(53, 12);
             this.LB_SleeveNo.TabIndex = 27;
@@ -1074,10 +1115,10 @@ namespace IntelligentRackConfiguration
             this.flowLayoutPanel1.Controls.Add(this.PhotoNopanel);
             this.flowLayoutPanel1.Controls.Add(this.Reworkpanel);
             this.flowLayoutPanel1.Controls.Add(this.BT_StepSubmit);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(14, 366);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(10, 363);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(1, 3, 3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(184, 465);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(184, 454);
             this.flowLayoutPanel1.TabIndex = 43;
             // 
             // BT_MaterialSubmit
@@ -1120,6 +1161,15 @@ namespace IntelligentRackConfiguration
             this.TB_VIEW1_CANEL.UseVisualStyleBackColor = true;
             this.TB_VIEW1_CANEL.Click += new System.EventHandler(this.TB_VIEW1_CANEL_Click);
             // 
+            // anthername
+            // 
+            this.anthername.AutoSize = true;
+            this.anthername.Location = new System.Drawing.Point(73, 126);
+            this.anthername.Name = "anthername";
+            this.anthername.Size = new System.Drawing.Size(41, 12);
+            this.anthername.TabIndex = 55;
+            this.anthername.Text = "label9";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1128,6 +1178,7 @@ namespace IntelligentRackConfiguration
             this.ClientSize = new System.Drawing.Size(934, 705);
             this.Controls.Add(this.anthername);
             this.Controls.Add(this.label8);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.BT_Eidit);
             this.Controls.Add(this.TB_VIEW1_CANEL);
             this.Controls.Add(this.label7);
@@ -1138,7 +1189,6 @@ namespace IntelligentRackConfiguration
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.TB_ProductionName);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.BT_MaterialCancel);
             this.Controls.Add(this.BT_MaterialSubmit);
             this.Controls.Add(this.panel1);
@@ -1208,8 +1258,6 @@ namespace IntelligentRackConfiguration
         public System.Windows.Forms.TextBox TB_ProductionName;
         private PictureBox pictureBox1;
         private ContextMenuStrip contextMenuStrip1;
-        private ToolStripMenuItem 增加员工ToolStripMenuItem1;
-        private ToolStripMenuItem 修改员工ToolStripMenuItem;
         private PictureBox pictureBox2;
         private PictureBox pictureBox3;
         private PictureBox pictureBox4;
@@ -1218,7 +1266,6 @@ namespace IntelligentRackConfiguration
         private Button BT_Eidit;
         public DataGridView dataGridView1;
         private Label label8;
-        private TextBox anthername;
         private DataGridViewTextBoxColumn StepNo;
         private DataGridViewTextBoxColumn Category;
         private DataGridViewTextBoxColumn Desc;
@@ -1289,6 +1336,11 @@ namespace IntelligentRackConfiguration
         private Button BT_MaterialCancel;
         private Button BT_Cancel;
         private Button TB_VIEW1_CANEL;
+        private ToolStripMenuItem 料架管理ToolStripMenuItem;
+        private ToolStripMenuItem 员工管理ToolStripMenuItem;
+        private ToolStripMenuItem 增加员工ToolStripMenuItem;
+        private ToolStripMenuItem 查询员工ToolStripMenuItem;
+        private Label anthername;
     }
 }
 

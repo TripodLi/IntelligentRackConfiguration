@@ -285,18 +285,29 @@ namespace IntelligentRackConfiguration
                     break;
                 case 2:
                     MaterialShelfpanel.Visible = false;
-                    MaterialNumpanel.Visible = false;
+                    MaterialNumpanel.Visible = true;
                     FeatureCodepanel.Visible = false;
                     Reworkpanel.Visible = false;
-                    //   Buttonpanel.Visible = true;
-
                     Sleevepanel.Visible = false;
                     Gunpanel.Visible = false;
-                    Programpanel.Visible = false;
+                    Programpanel.Visible = true;
                     PhotoNopanel.Visible = true;
                     TB_MaterialName.Visible = true;
                     LB_MaterailName.Visible = true;
                     label3.Visible = true;
+                    break;
+                case 3:
+                    MaterialShelfpanel.Visible = false;
+                    MaterialNumpanel.Visible = false;
+                    FeatureCodepanel.Visible = false;
+                    Reworkpanel.Visible = false;
+                    Sleevepanel.Visible = false;
+                    Gunpanel.Visible = false;
+                    Programpanel.Visible = false;
+                    PhotoNopanel.Visible = false;
+                    TB_MaterialName.Visible = false;
+                    LB_MaterailName.Visible = false;
+                    label3.Visible = false;
                     break;
                 default:
                     MaterialShelfpanel.Visible = false;

@@ -109,18 +109,33 @@ namespace IntelligentRackConfiguration
                     break;
                 case 2:
                     MaterialShelfpanel.Visible = false;
-                    MaterialNumpanel.Visible = false;
+                    MaterialNumpanel.Visible = true;
                     FeatureCodepanel.Visible = false;
                     Reworkpanel.Visible = false;
                     //   Buttonpanel.Visible = true;
 
                     Sleevepanel.Visible = false;
                     Gunpanel.Visible = false;
-                    Programpanel.Visible = false;
+                    Programpanel.Visible = true;
                     PhotoNopanel.Visible = true;
                     TB_MaterialName.Visible = true;
                     LB_MaterailName.Visible = true;
                     label3.Visible = true;
+                    break;
+                case 3:
+                    MaterialShelfpanel.Visible = false;
+                    MaterialNumpanel.Visible = false;
+                    FeatureCodepanel.Visible = false;
+                    Reworkpanel.Visible = false;
+                    //  Buttonpanel.Visible = true;
+
+                    Sleevepanel.Visible = false;
+                    Gunpanel.Visible = false;
+                    Programpanel.Visible = false;
+                    PhotoNopanel.Visible = false;
+                    TB_MaterialName.Visible = false;
+                    LB_MaterailName.Visible = false;
+                    label3.Visible = false;
                     break;
                 default:
                     MaterialShelfpanel.Visible = false;
@@ -755,60 +770,60 @@ namespace IntelligentRackConfiguration
 
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e == null || e.Value == null || !(sender is DataGridView))
-                return;
+        //    if (e == null || e.Value == null || !(sender is DataGridView))
+        //        return;
 
-            DataGridView view = (DataGridView)sender;
-            object originalValue = e.Value;
-            //更改类别显示
-            if (view.Columns[e.ColumnIndex].DataPropertyName == "CATEGORY")
-                switch ((int)originalValue)
-                {
-                    case 1:
-                        e.Value = (int)originalValue + ".扫描";
-                        break;
-                    case 2:
-                        e.Value = (int)originalValue + ".拧紧";
-                        break;
-                    case 3:
-                        e.Value = (int)originalValue + ".拍照";
-                        break;
-                    case 4:
-                        e.Value = "END";
-                        break;
-                }
-            //转换料格号
-            if (view.Columns[e.ColumnIndex].DataPropertyName == "MATERIALSHELF_NO")
-            {
-                if ((int)originalValue > 0)
-                {
-                    e.Value = (int)originalValue + "号料格";
-                }
-             }
-        //转换枪号
-         if (view.Columns[e.ColumnIndex].DataPropertyName == "GUN_NO")
-         {
-             if ((int)originalValue>0)
-             {
-                 e.Value = (int)originalValue + "号枪";
-             }
-         }
-         //转换套筒号
-         if (view.Columns[e.ColumnIndex].DataPropertyName == "SLEEVE_NO")
-         {
-             if ((int)originalValue > 0)
-             {
-                 e.Value = (int)originalValue + "号套筒";
-             }
-         }
-         //转换相机号
-         if (view.Columns[e.ColumnIndex].DataPropertyName == "PHOTO_NO")
-         {
-             if ((int)originalValue > 0)
-             {
-                 e.Value = (int)originalValue + "号相机";
-             }
-         }
+        //    DataGridView view = (DataGridView)sender;
+        //    object originalValue = e.Value;
+        //    //更改类别显示
+        //    if (view.Columns[e.ColumnIndex].DataPropertyName == "CATEGORY")
+        //        switch ((int)originalValue)
+        //        {
+        //            case 1:
+        //                e.Value = (int)originalValue + ".扫描";
+        //                break;
+        //            case 2:
+        //                e.Value = (int)originalValue + ".拧紧";
+        //                break;
+        //            case 3:
+        //                e.Value = (int)originalValue + ".拍照";
+        //                break;
+        //            case 4:
+        //                e.Value = "END";
+        //                break;
+        //        }
+        //    //转换料格号
+        //    if (view.Columns[e.ColumnIndex].DataPropertyName == "MATERIALSHELF_NO")
+        //    {
+        //        if ((int)originalValue > 0)
+        //        {
+        //            e.Value = (int)originalValue + "号料格";
+        //        }
+        //     }
+        ////转换枪号
+        // if (view.Columns[e.ColumnIndex].DataPropertyName == "GUN_NO")
+        // {
+        //     if ((int)originalValue>0)
+        //     {
+        //         e.Value = (int)originalValue + "号枪";
+        //     }
+        // }
+        // //转换套筒号
+        // if (view.Columns[e.ColumnIndex].DataPropertyName == "SLEEVE_NO")
+        // {
+        //     if ((int)originalValue > 0)
+        //     {
+        //         e.Value = (int)originalValue + "号套筒";
+        //     }
+        // }
+        // //转换相机号
+        // if (view.Columns[e.ColumnIndex].DataPropertyName == "PHOTO_NO")
+        // {
+        //     if ((int)originalValue > 0)
+        //     {
+        //         e.Value = (int)originalValue + "号相机";
+        //     }
+        // }
                 
         }
 
@@ -877,16 +892,6 @@ namespace IntelligentRackConfiguration
         {
             FormFindEmp ffe = new FormFindEmp();
             ffe.ShowDialog();
-        }
-        /// <summary>
-        /// 弹出增加员工子窗体
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void 增加员工ToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            FormAddEmp fa = new FormAddEmp();
-            fa.ShowDialog();
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
@@ -973,6 +978,18 @@ namespace IntelligentRackConfiguration
             //TB_FeatureCode.Text = dataGridView1.Rows[row].Cells["FEATURE_CODE"].Value.ToString();
             //CB_PhotoNo.SelectedIndex = Convert.ToInt32(dataGridView1.Rows[row].Cells["PHOTO_NO"].Value.ToString()) - 1;
             //TB_ReworkTimes.Text = dataGridView1.Rows[row].Cells["REWORK_TIMES"].Value.ToString();
+        }
+
+        private void 增加员工ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormAddEmp fa = new FormAddEmp();
+            fa.ShowDialog();
+        }
+
+        private void 料架管理ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FeerackManager fm = new FeerackManager();
+            fm.ShowDialog();
         }
     }
 }

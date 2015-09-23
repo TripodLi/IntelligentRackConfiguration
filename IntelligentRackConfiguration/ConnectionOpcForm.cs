@@ -1,4 +1,5 @@
 ﻿using MyOPC;
+using MyPLCDataview;
 using MySql;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace IntelligentRackConfiguration
         public int renectioncount = 0;
         public static int feerackId;
         Boolean myselfBeat;
+        PLCFunction plc;
        // public static int productionType;
         /// <summary>
         /// 写日志时加锁
@@ -118,6 +120,8 @@ namespace IntelligentRackConfiguration
                 OPC = new OPCCreate();
                 OPC.EventDataChanged += new EventDataChanged(OnEventDataChanged);
                 OPC.Run();
+                plc = new PLCFunction(GetXml("PlcIp", "value"));//参数为PLC IP地址
+                plc.DataType = DataType.DataBlock;//设置要读取的地址类型（可不写，默认为DataBlock）
             }
             catch
             {
@@ -1040,23 +1044,21 @@ namespace IntelligentRackConfiguration
             String pn;
             String feerackNo = GetFeerackByItem(itemCode.ToString());
             String order=GetOrderByItem(itemCode.ToString());
-            if(itemValue=="1"&& order=="1")//校验员工号
+            #region  校验员工号
+            if (itemValue=="1"&& order=="1")//校验员工号
             {
-                plcEmpName = OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "2"))).ToString();
-                //  plcEmpName = "张三";
+                plcEmpName = plc.ReadPLCByString(GetDBByConfig(feerackNo, "2"), GetAddressByConfig(feerackNo, "2"), GetLengthByConfig(feerackNo, "2")).Trim("\0".ToCharArray());
+                string aa = plcEmpName.Trim();
                 if (String.IsNullOrEmpty(plcEmpName))
                 {
-
-                    plcEmpName = OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "2"))).ToString();
+                    plcEmpName = plc.ReadPLCByString(GetDBByConfig(feerackNo, "2"), GetAddressByConfig(feerackNo, "2"), GetLengthByConfig(feerackNo, "2")).Trim("\0".ToCharArray());
                     if (String.IsNullOrEmpty(plcEmpName))
                     {
-                        plcEmpName = OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "2"))).ToString();
+                        plcEmpName = plc.ReadPLCByString(GetDBByConfig(feerackNo, "2"), GetAddressByConfig(feerackNo, "2"), GetLengthByConfig(feerackNo, "2")).Trim("\0".ToCharArray());
                         if (String.IsNullOrEmpty(plcEmpName))
                         {
-                            OPC.WriteItem(itemCode, 9);
-                            //String sql = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比员工号',1,9,'错误')";
-                            //db.ExecuteNonQuery(sql);
-                            TB_ShowLog.AppendText(DateTime.Now.ToString()+" 员工号对比" + feerackNo + "#料架 " + "请求信号： " + itemValue + "写入结果： " + 9 + " 表示员工号不通过" + Environment.NewLine);
+                           OPC.WriteItem(itemCode, 9);
+                           TB_ShowLog.AppendText(DateTime.Now.ToString()+" 员工号对比" + feerackNo + "#料架 " + "请求信号： " + itemValue + "写入结果： " + 9 + " 表示员工号不通过" + Environment.NewLine);
                         }
                         else
                         {
@@ -1067,16 +1069,12 @@ namespace IntelligentRackConfiguration
                             {
                                 //员工号通过
                                 OPC.WriteItem(itemCode, 2);
-                                //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比员工号',1,2,'对比员工号通过')";
-                                //db.ExecuteNonQuery(sql1);
                                 TB_ShowLog.AppendText(DateTime.Now.ToString()+" 员工号对比" + feerackNo + "#料架 " + "请求信号： " + itemValue + "写入结果： " + 2 + " 表示员工号通过" + Environment.NewLine);
                             }
                             else
                             {
                                 //员工号不通过
                                 OPC.WriteItem(itemCode, 3);
-                                //String sql2 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比员工号',1,3,'对比员工号不通过')";
-                                //db.ExecuteNonQuery(sql2);
                                 TB_ShowLog.AppendText(DateTime.Now.ToString() + " 员工号对比" + feerackNo + "#料架 " + "请求信号： " + itemValue + " 写入结果： " + 3 + " 表示员工号不通过" + Environment.NewLine);
                             }
                         }
@@ -1090,21 +1088,15 @@ namespace IntelligentRackConfiguration
                         {
                             //员工号通过
                             OPC.WriteItem(itemCode, 2);
-                            //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比员工号',1,2,'对比员工号通过')";
-                            //db.ExecuteNonQuery(sql1);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 员工号对比" + feerackNo + "#料架" + " 请求信号： " + itemValue + "写入结果： " + 2 + " 表示员工号通过" + Environment.NewLine);
                         }
                         else
                         {
                             //员工号不通过
                             OPC.WriteItem(itemCode, 3);
-                            //String sql2 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比员工号',1,3,'对比员工号不通过')";
-                            //db.ExecuteNonQuery(sql2);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 员工号对比" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 写入结果： " + 3 + " 表示员工号不通过" + Environment.NewLine);
                         }
                     }
-
-                    //  WriteLog("员工号对比-请求信号： "+control + "写入结果： "+ 9 +" 表示地址块中员工号为空");
                 }
                 else
                 {
@@ -1115,216 +1107,195 @@ namespace IntelligentRackConfiguration
                     {
                         //员工号通过
                         OPC.WriteItem(itemCode, 2);
-                        //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比员工号',1,2,'对比员工号通过')";
-                        //db.ExecuteNonQuery(sql1);
                         TB_ShowLog.AppendText(DateTime.Now.ToString() + " 员工号对比" + feerackNo + "#料架" + " 请求信号： " + itemValue + "写入结果： " + 2 + " 表示员工号通过" + Environment.NewLine);
                     }
                     else
                     {
                         //员工号不通过
                         OPC.WriteItem(itemCode, 3);
-                        //String sql2 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比员工号',1,3,'对比员工号不通过')";
-                        //db.ExecuteNonQuery(sql2);
                         TB_ShowLog.AppendText(DateTime.Now.ToString() + " 员工号对比" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 写入结果： " + 3 + " 表示员工号不通过" + Environment.NewLine);
                     }
                 }
             }
+            #endregion 校验员工号到此结束
+            #region 请求总步数和产品名称
             if (itemValue == "11" && order == "1") //请求产品名称和总步序
             {
-                 opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
+              //  opcProductionType =plc.ReadPLCByInt32(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                 if (opcProductionType <= 0 && opcProductionType > 20)
                 {
                     System.Threading.Thread.Sleep(800);
-                    opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                    opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                     if (opcProductionType <= 0 && opcProductionType > 20)
                     {
                         System.Threading.Thread.Sleep(800);
-                        opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                        opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                         if (opcProductionType <= 0 && opcProductionType > 20)
                         {
                             //不是产品类型
                             OPC.WriteItem(itemCode, 19);
-                            //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求产品名称和总步数',11,19,'请求产品名称错误')";
-                            //db.ExecuteNonQuery(sql1);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + "产品类型： " + opcProductionType + " 完成信号： " + 19 + Environment.NewLine);
                         }
                         else
                         {
                             String sql10 = "SELECT COUNT(IDT.INTELLIGENTRACK_DETAIL_ID)AS STEPNUM,PT.PRODUCTION_NAME FROM XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_FEERACK_T FT WHERE IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND FT.FEERACK_ID=PT.FEERACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + "  GROUP BY PT.PRODUCTION_NAME";
-                            //    String sql1 = "SELECT PT.PRODUCTION_NAME FROM XH_PRODUCTION_T PT WHERE PT.PRODUCTION_TYPE=" + opcProductionType + " AND PT.FEERACK_ID=" + Convert.ToInt32(F.CB_Station.SelectedValue) + ";";
                             DataTable dt2 = new DataTable();
                             dt2 = db.ExecuteDataTable(sql10);
                             if (dt2.Rows.Count == 1)
                             {
                                 //写入名称
-                                OPC.WriteItem(Convert.ToInt32(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "4"))), dt2.Rows[0]["PRODUCTION_NAME"].ToString());
+                                plc.WritePLCByString(GetDBByConfig(feerackNo, "4"), GetAddressByConfig(feerackNo, "4"), GetLengthByConfig(feerackNo, "4"), dt2.Rows[0]["PRODUCTION_NAME"].ToString());
                                 //写入总步数
-                                OPC.WriteItem(Convert.ToInt32(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "5"))), Convert.ToInt32(dt2.Rows[0]["STEPNUM"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "5"), GetAddressByConfig(feerackNo, "5"), Convert.ToInt16(dt2.Rows[0]["STEPNUM"].ToString()));
                                 //完成
                                 OPC.WriteItem(itemCode, 12);
-                                //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PRODUCTION_NAME,STEP_TOAL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求产品名称和总步数',11,'" + dt2.Rows[0]["PRODUCTION_NAME"].ToString() + "','" + dt2.Rows[0]["STEPNUM"].ToString() + "',12,'请求产品名称和总步数成功');";
-                                //db.ExecuteNonQuery(sql1);
                                 TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 写入产品名称： " + dt2.Rows[0]["PRODUCTION_NAME"].ToString() + "写入总步数： " + Convert.ToInt32(dt2.Rows[0]["STEPNUM"].ToString()) + " 完成信号： " + 12 + Environment.NewLine);
                             }
                             else
                             {
                                 //错误
                                 OPC.WriteItem(itemCode, 19);
-                                //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求产品名称和总步数',11,19,'请求产品名称错误')";
-                                //db.ExecuteNonQuery(sql1);
-                                TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 写入结果： " + 19 + " 表示不是产品类型" + Environment.NewLine);
+                                TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " PLC写入产品类型：" + opcProductionType + " 写入结果： " + 19 + " 表示不是产品类型" + Environment.NewLine);
                             }
                         }
                     }
                     else
                     {
                         String sql10 = "SELECT COUNT(IDT.INTELLIGENTRACK_DETAIL_ID)AS STEPNUM,PT.PRODUCTION_NAME FROM XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_FEERACK_T FT WHERE IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND FT.FEERACK_ID=PT.FEERACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + "  GROUP BY PT.PRODUCTION_NAME";
-                        //    String sql1 = "SELECT PT.PRODUCTION_NAME FROM XH_PRODUCTION_T PT WHERE PT.PRODUCTION_TYPE=" + opcProductionType + " AND PT.FEERACK_ID=" + Convert.ToInt32(F.CB_Station.SelectedValue) + ";";
                         DataTable dt2 = new DataTable();
                         dt2 = db.ExecuteDataTable(sql10);
                         if (dt2.Rows.Count == 1)
                         {
                             //写入名称
-                            OPC.WriteItem(Convert.ToInt32(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "4"))), dt2.Rows[0]["PRODUCTION_NAME"].ToString());
+                            plc.WritePLCByString(GetDBByConfig(feerackNo, "4"), GetAddressByConfig(feerackNo, "4"), GetLengthByConfig(feerackNo, "4"), dt2.Rows[0]["PRODUCTION_NAME"].ToString());
                             //写入总步数
-                            OPC.WriteItem(Convert.ToInt32(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "5"))), Convert.ToInt32(dt2.Rows[0]["STEPNUM"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "5"), GetAddressByConfig(feerackNo, "5"), Convert.ToInt16(dt2.Rows[0]["STEPNUM"].ToString()));
                             //完成
                             OPC.WriteItem(itemCode, 12);
-                            //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PRODUCTION_NAME,STEP_TOAL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求产品名称和总步数',11,'" + dt2.Rows[0]["PRODUCTION_NAME"].ToString() + "','" + dt2.Rows[0]["STEPNUM"].ToString() + "',12,'请求产品名称和总步数成功');";
-                            //db.ExecuteNonQuery(sql1);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 写入产品名称： " + dt2.Rows[0]["PRODUCTION_NAME"].ToString() + "写入总步数： " + Convert.ToInt32(dt2.Rows[0]["STEPNUM"].ToString()) + " 完成信号： " + 12 + Environment.NewLine);
                         }
                         else
                         {
                             //错误
                             OPC.WriteItem(itemCode, 19);
-                            //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求产品名称和总步数',11,19,'请求产品名称错误')";
-                            //db.ExecuteNonQuery(sql1);
-                            TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 写入结果： " + 19 + " 表示不是产品类型" + Environment.NewLine);
+                            TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " PLC写入产品类型：" + opcProductionType + " 写入结果： " + 19 + " 表示不是产品类型" + Environment.NewLine);
                         }
                     }
-
-                    //   WriteLog("请求产品名称-请求信号： " + control + " 写入结果： " + 19 + " 表示不是产品类型");
                 }
                 else
                 {
                     String sql10 = "SELECT COUNT(IDT.INTELLIGENTRACK_DETAIL_ID)AS STEPNUM,PT.PRODUCTION_NAME FROM XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_FEERACK_T FT WHERE IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND FT.FEERACK_ID=PT.FEERACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + "  GROUP BY PT.PRODUCTION_NAME";
-                    //    String sql1 = "SELECT PT.PRODUCTION_NAME FROM XH_PRODUCTION_T PT WHERE PT.PRODUCTION_TYPE=" + opcProductionType + " AND PT.FEERACK_ID=" + Convert.ToInt32(F.CB_Station.SelectedValue) + ";";
                     DataTable dt2 = new DataTable();
                     dt2 = db.ExecuteDataTable(sql10);
                     if (dt2.Rows.Count == 1)
                     {
                         //写入名称
-                        OPC.WriteItem(Convert.ToInt32(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "4"))), dt2.Rows[0]["PRODUCTION_NAME"].ToString());
+                        plc.WritePLCByString(GetDBByConfig(feerackNo, "4"), GetAddressByConfig(feerackNo, "4"), GetLengthByConfig(feerackNo, "4"), dt2.Rows[0]["PRODUCTION_NAME"].ToString());
                         //写入总步数
-                        OPC.WriteItem(Convert.ToInt32(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "5"))), Convert.ToInt32(dt2.Rows[0]["STEPNUM"].ToString()));
+                        plc.WritePLCByInt16(GetDBByConfig(feerackNo, "5"), GetAddressByConfig(feerackNo, "5"), Convert.ToInt16(dt2.Rows[0]["STEPNUM"].ToString()));
                         //完成
                         OPC.WriteItem(itemCode, 12);
-                        //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PRODUCTION_NAME,STEP_TOAL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求产品名称和总步数',11,'" + dt2.Rows[0]["PRODUCTION_NAME"].ToString() + "','" + dt2.Rows[0]["STEPNUM"].ToString() + "',12,'请求产品名称和总步数成功');";
-                        //db.ExecuteNonQuery(sql1);
                         TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 写入产品名称： " + dt2.Rows[0]["PRODUCTION_NAME"].ToString() + "写入总步数： " + Convert.ToInt32(dt2.Rows[0]["STEPNUM"].ToString()) + " 完成信号： " + 12 + Environment.NewLine);
                     }
                     else
                     {
                         //错误
                         OPC.WriteItem(itemCode, 19);
-                        //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求产品名称和总步数',11,19,'请求产品名称错误')";
-                        //db.ExecuteNonQuery(sql1);
-                        TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 写入结果： " + 19 + " 表示不是产品类型" + Environment.NewLine);
+                        TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求产品名称" + feerackNo + "#料架" + " 请求信号： " + itemValue + " PLC写入产品类型：" + opcProductionType + " 写入结果： " + 19 + " 表示不是产品类型" + Environment.NewLine);
                     }
                 }
             }
-            if(itemValue == "21" && order == "1") //请求步 
+            #endregion 请求总步数和产品名称结束
+            #region 请求步信息
+            if (itemValue == "21" && order == "1") //请求步 
             {
-                opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
-                int reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
-                if (reqStep <= 0)
+                opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
+                int reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
+                if (reqStep <= 0 )
                 {
-                    reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
+                    System.Threading.Thread.Sleep(500);
+                    reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
                     if (reqStep <= 0)
                     {
-                        reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
+                        System.Threading.Thread.Sleep(500);
+                        reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
                         if (reqStep <= 0)
                         {
                             OPC.WriteItem(itemCode, 29);
-                            //String sql = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求步',21,'" + reqStep.ToString() + "',29,'请求步错误');";
-                            //db.ExecuteNonQuery(sql);
+                            TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep  + " 完成信号：" + 29 + Environment.NewLine);
                         }
                         else
                         {
                             if (reqStepLog == reqStep)
                             {
                                 System.Threading.Thread.Sleep(500);
-                                reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
+                                reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
                                 if (reqStepLog == reqStep)
                                 {
                                     System.Threading.Thread.Sleep(500);
-                                    reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
+                                    reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
                                 }
                             }
-                            opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                            opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                             String sql2 = "SELECT IDT.* FROM XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_FEERACK_T FT WHERE  FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.STEP_NO=" + reqStep + " AND IDT.DELETE_FLAG='0'";
                             DataTable dt3 = new DataTable();
                             dt3 = db.ExecuteDataTable(sql2);
                             //写入类别
-                            //int aaa = Convert.ToInt32(GetOpcConfigXml(feerack, "7"));
-                            //string bbb = dt3.Rows[0]["CATEGORY"].ToString();
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "7")), Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "7"), GetAddressByConfig(feerackNo, "7"), Convert.ToInt16(dt3.Rows[0]["CATEGORY"].ToString()));
                             switch (Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()))
                             {
                                 case 1: //扫描
                                     //写入名字
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                                    plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                                     //写入料格号
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()));
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()));
                                     //写入数量
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "10")), Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "10"), GetAddressByConfig(feerackNo, "10"), Convert.ToInt16(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
                                     //向PLC写入请求的步数
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"),Convert.ToInt16(reqStep));
                                     // 完成
                                     OPC.WriteItem(itemCode, 22);
-                                    //String sql = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,MATERIALSHELF_NO,MATERIAL_NUMBER,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo+ "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["MATERIALSHELF_NO"].ToString() + "号料格','" + dt3.Rows[0]["MATERIAL_NUMBER"].ToString() + "',22,'请求步-扫描：成功');";
-                                    //db.ExecuteNonQuery(sql);
                                     TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "料格号： " + Convert.ToInt32(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()) + " 数量：" + Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()) + " 完成信号：" + 22 + Environment.NewLine);
                                     break;
                                 case 2: //拧紧
                                     //写入名字
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                                    plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                                     //写入工具号
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["GUN_NO"].ToString()));
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["GUN_NO"].ToString()));
                                     //请求步套筒号
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "11")), Convert.ToInt32(dt3.Rows[0]["SLEEVE_NO"].ToString()));
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "11"), GetAddressByConfig(feerackNo, "11"), Convert.ToInt16(dt3.Rows[0]["SLEEVE_NO"].ToString()));
                                     //请求步程序号
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "12")), Convert.ToInt32(dt3.Rows[0]["PROGRAME_NO"].ToString()));
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "12"), GetAddressByConfig(feerackNo, "12"), Convert.ToInt16(dt3.Rows[0]["PROGRAME_NO"].ToString()));
                                     //写入返工次数
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "13")), Convert.ToInt32(dt3.Rows[0]["REWORK_TIMES"].ToString()));
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "13"), GetAddressByConfig(feerackNo, "13"),Convert.ToInt16(dt3.Rows[0]["REWORK_TIMES"].ToString()));
                                     //写入数量
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "10")), Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "10"), GetAddressByConfig(feerackNo, "10"), Convert.ToInt16(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
                                     //向PLC写入请求的步数
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                                     // 完成
                                     OPC.WriteItem(itemCode, 22);
-                                    //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,GUN_NO,SLEEVE_NO,PROGRAME_NO,REWORK_TIMES,MATERIAL_NUMBER,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["GUN_NO"].ToString() + "号枪','" + dt3.Rows[0]["SLEEVE_NO"].ToString() + "号套筒','" + dt3.Rows[0]["PROGRAME_NO"].ToString() + "','" + dt3.Rows[0]["REWORK_TIMES"].ToString() + "次','" + dt3.Rows[0]["MATERIAL_NUMBER"].ToString() + "'22,'请求步-拧紧：成功');";
-                                    //db.ExecuteNonQuery(sql1);
                                     TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "工具号： " + Convert.ToInt32(dt3.Rows[0]["GUN_NO"].ToString()) + " 套筒号：" + Convert.ToInt32(dt3.Rows[0]["SLEEVE_NO"].ToString()) + "程序号： " + Convert.ToInt32(dt3.Rows[0]["PROGRAME_NO"].ToString()) + "返工次数：" + Convert.ToInt32(dt3.Rows[0]["REWORK_TIMES"].ToString()) + "数量： " + Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()) + "完成信号：" + 22 + Environment.NewLine);
                                     break;
                                 case 3: //照相
                                     //写入名字
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                                    plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                                     //写入工具号
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["PHOTO_NO"].ToString()));
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["PHOTO_NO"].ToString()));
+                                    //写入数量
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "10"), GetAddressByConfig(feerackNo, "10"), Convert.ToInt16(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                                    //写入程序号
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "12"), GetAddressByConfig(feerackNo, "12"), Convert.ToInt16(dt3.Rows[0]["PROGRAME_NO"].ToString()));
                                     //向PLC写入请求的步数
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                                     // 完成
                                     OPC.WriteItem(itemCode, 22);
-                                    //String sql3 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,PHOTO_NO,RESULT,SIGNIFICANCE)VALUES(GETDATE(),'" + feerack + "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["PHOTO_NO"].ToString() + "号相机,22,'请求步-照相：成功');";
-                                    //db.ExecuteNonQuery(sql3);
                                     TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "相机号： " + Convert.ToInt32(dt3.Rows[0]["PHOTO_NO"].ToString()) + "完成信号：" + 22 + Environment.NewLine);
                                     break;
-                                case 4:
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "7")), "10");
+                                case 10:
+                                    plc.WritePLCByString(GetDBByConfig(feerackNo,"7"),GetAddressByConfig(feerackNo,"7"),GetLengthByConfig(feerackNo,"7"),"10");
                                     //向PLC写入请求的步数
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                                     OPC.WriteItem(itemCode, 22);
                                     break;
                             }
@@ -1336,275 +1307,241 @@ namespace IntelligentRackConfiguration
                         if (reqStepLog == reqStep)
                         {
                             System.Threading.Thread.Sleep(500);
-                            reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
+                            reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
                             if (reqStepLog == reqStep)
                             {
-                                System.Threading.Thread.Sleep(300);
-                                reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
+                                System.Threading.Thread.Sleep(500);
+                                reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
                             }
                         }
-                        opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                        opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                         String sql2 = "SELECT IDT.* FROM XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_FEERACK_T FT WHERE  FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.STEP_NO=" + reqStep + " AND IDT.DELETE_FLAG='0'";
                         DataTable dt3 = new DataTable();
                         dt3 = db.ExecuteDataTable(sql2);
                         //写入类别
-                        //int aaa = Convert.ToInt32(GetOpcConfigXml(feerack, "7"));
-                        //string bbb = dt3.Rows[0]["CATEGORY"].ToString();
-                        OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "7")), Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()));
+                        plc.WritePLCByInt16(GetDBByConfig(feerackNo, "7"), GetAddressByConfig(feerackNo, "7"), Convert.ToInt16(dt3.Rows[0]["CATEGORY"].ToString()));
                         switch (Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()))
                         {
                             case 1: //扫描
                                 //写入名字
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                                plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                                 //写入料格号
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()));
                                 //写入数量
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "10")), Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "10"), GetAddressByConfig(feerackNo, "10"), Convert.ToInt16(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
                                 //向PLC写入请求的步数
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                                 // 完成
                                 OPC.WriteItem(itemCode, 22);
-                                //String sql = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,MATERIALSHELF_NO,MATERIAL_NUMBER,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo+ "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["MATERIALSHELF_NO"].ToString() + "号料格','" + dt3.Rows[0]["MATERIAL_NUMBER"].ToString() + "',22,'请求步-扫描：成功');";
-                                //db.ExecuteNonQuery(sql);
                                 TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "料格号： " + Convert.ToInt32(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()) + " 数量：" + Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()) + " 完成信号：" + 22 + Environment.NewLine);
                                 break;
                             case 2: //拧紧
                                 //写入名字
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                                plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                                 //写入工具号
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["GUN_NO"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["GUN_NO"].ToString()));
                                 //请求步套筒号
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "11")), Convert.ToInt32(dt3.Rows[0]["SLEEVE_NO"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "11"), GetAddressByConfig(feerackNo, "11"), Convert.ToInt16(dt3.Rows[0]["SLEEVE_NO"].ToString()));
                                 //请求步程序号
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "12")), Convert.ToInt32(dt3.Rows[0]["PROGRAME_NO"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "12"), GetAddressByConfig(feerackNo, "12"), Convert.ToInt16(dt3.Rows[0]["PROGRAME_NO"].ToString()));
                                 //写入返工次数
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "13")), Convert.ToInt32(dt3.Rows[0]["REWORK_TIMES"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "13"), GetAddressByConfig(feerackNo, "13"), Convert.ToInt16(dt3.Rows[0]["REWORK_TIMES"].ToString()));
                                 //写入数量
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "10")), Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "10"), GetAddressByConfig(feerackNo, "10"), Convert.ToInt16(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
                                 //向PLC写入请求的步数
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                                 // 完成
                                 OPC.WriteItem(itemCode, 22);
-                                //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,GUN_NO,SLEEVE_NO,PROGRAME_NO,REWORK_TIMES,MATERIAL_NUMBER,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["GUN_NO"].ToString() + "号枪','" + dt3.Rows[0]["SLEEVE_NO"].ToString() + "号套筒','" + dt3.Rows[0]["PROGRAME_NO"].ToString() + "','" + dt3.Rows[0]["REWORK_TIMES"].ToString() + "次','" + dt3.Rows[0]["MATERIAL_NUMBER"].ToString() + "'22,'请求步-拧紧：成功');";
-                                //db.ExecuteNonQuery(sql1);
                                 TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "工具号： " + Convert.ToInt32(dt3.Rows[0]["GUN_NO"].ToString()) + " 套筒号：" + Convert.ToInt32(dt3.Rows[0]["SLEEVE_NO"].ToString()) + "程序号： " + Convert.ToInt32(dt3.Rows[0]["PROGRAME_NO"].ToString()) + "返工次数：" + Convert.ToInt32(dt3.Rows[0]["REWORK_TIMES"].ToString()) + "数量： " + Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()) + "完成信号：" + 22 + Environment.NewLine);
                                 break;
                             case 3: //照相
                                 //写入名字
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                                plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                                 //写入工具号
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["PHOTO_NO"].ToString()));
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["PHOTO_NO"].ToString()));
                                 //向PLC写入请求的步数
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                                 // 完成
                                 OPC.WriteItem(itemCode, 22);
-                                //String sql3 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,PHOTO_NO,RESULT,SIGNIFICANCE)VALUES(GETDATE(),'" + feerack + "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["PHOTO_NO"].ToString() + "号相机,22,'请求步-照相：成功');";
-                                //db.ExecuteNonQuery(sql3);
                                 TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "相机号： " + Convert.ToInt32(dt3.Rows[0]["PHOTO_NO"].ToString()) + "完成信号：" + 22 + Environment.NewLine);
                                 break;
                             case 4:
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "7")), "10");
+                                plc.WritePLCByString(GetDBByConfig(feerackNo, "7"), GetAddressByConfig(feerackNo, "7"), GetLengthByConfig(feerackNo, "7"), "10");
                                 //向PLC写入请求的步数
-                                OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                                plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                                 OPC.WriteItem(itemCode, 22);
                                 break;
                         }
                         reqStepLog = reqStep; //记录步信息
                     }
-
-                    // WriteLog("请求步-请求信号： " + control + " 写入结果： " + 29 + " 表示不是产品类型");
                 }
                 else
                 {
                     if (reqStepLog == reqStep)
                     {
                         System.Threading.Thread.Sleep(500);
-                        reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
+                        reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
                         if (reqStepLog == reqStep)
                         {
-                            System.Threading.Thread.Sleep(300);
-                            reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6"))).ToString()));
+                            System.Threading.Thread.Sleep(500);
+                            reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"));
                         }
                     }
-                    opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                    opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                     String sql2 = "SELECT IDT.* FROM XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_FEERACK_T FT WHERE  FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.STEP_NO=" + reqStep + " AND IDT.DELETE_FLAG='0'";
                     DataTable dt3 = new DataTable();
                     dt3 = db.ExecuteDataTable(sql2);
                     //写入类别
-                    //int aaa = Convert.ToInt32(GetOpcConfigXml(feerack, "7"));
-                    //string bbb = dt3.Rows[0]["CATEGORY"].ToString();
-                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "7")), Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()));
+                    plc.WritePLCByInt16(GetDBByConfig(feerackNo, "7"), GetAddressByConfig(feerackNo, "7"), Convert.ToInt16(dt3.Rows[0]["CATEGORY"].ToString()));
                     switch (Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()))
                     {
                         case 1: //扫描
                             //写入名字
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                            plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                             //写入料格号
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()));
                             //写入数量
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "10")), Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "10"), GetAddressByConfig(feerackNo, "10"), Convert.ToInt16(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
                             //向PLC写入请求的步数
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                             // 完成
                             OPC.WriteItem(itemCode, 22);
-                            //String sql = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,MATERIALSHELF_NO,MATERIAL_NUMBER,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo+ "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["MATERIALSHELF_NO"].ToString() + "号料格','" + dt3.Rows[0]["MATERIAL_NUMBER"].ToString() + "',22,'请求步-扫描：成功');";
-                            //db.ExecuteNonQuery(sql);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "料格号： " + Convert.ToInt32(dt3.Rows[0]["MATERIALSHELF_NO"].ToString()) + " 数量：" + Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()) + " 完成信号：" + 22 + Environment.NewLine);
                             break;
                         case 2: //拧紧
                             //写入名字
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                            plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                             //写入工具号
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["GUN_NO"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["GUN_NO"].ToString()));
                             //请求步套筒号
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "11")), Convert.ToInt32(dt3.Rows[0]["SLEEVE_NO"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "11"), GetAddressByConfig(feerackNo, "11"), Convert.ToInt16(dt3.Rows[0]["SLEEVE_NO"].ToString()));
                             //请求步程序号
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "12")), Convert.ToInt32(dt3.Rows[0]["PROGRAME_NO"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "12"), GetAddressByConfig(feerackNo, "12"), Convert.ToInt16(dt3.Rows[0]["PROGRAME_NO"].ToString()));
                             //写入返工次数
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "13")), Convert.ToInt32(dt3.Rows[0]["REWORK_TIMES"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "13"), GetAddressByConfig(feerackNo, "13"), Convert.ToInt16(dt3.Rows[0]["REWORK_TIMES"].ToString()));
                             //写入数量
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "10")), Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "10"), GetAddressByConfig(feerackNo, "10"), Convert.ToInt16(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()));
                             //向PLC写入请求的步数
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                             // 完成
                             OPC.WriteItem(itemCode, 22);
-                            //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,GUN_NO,SLEEVE_NO,PROGRAME_NO,REWORK_TIMES,MATERIAL_NUMBER,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["GUN_NO"].ToString() + "号枪','" + dt3.Rows[0]["SLEEVE_NO"].ToString() + "号套筒','" + dt3.Rows[0]["PROGRAME_NO"].ToString() + "','" + dt3.Rows[0]["REWORK_TIMES"].ToString() + "次','" + dt3.Rows[0]["MATERIAL_NUMBER"].ToString() + "'22,'请求步-拧紧：成功');";
-                            //db.ExecuteNonQuery(sql1);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "工具号： " + Convert.ToInt32(dt3.Rows[0]["GUN_NO"].ToString()) + " 套筒号：" + Convert.ToInt32(dt3.Rows[0]["SLEEVE_NO"].ToString()) + "程序号： " + Convert.ToInt32(dt3.Rows[0]["PROGRAME_NO"].ToString()) + "返工次数：" + Convert.ToInt32(dt3.Rows[0]["REWORK_TIMES"].ToString()) + "数量： " + Convert.ToInt32(dt3.Rows[0]["MATERIAL_NUMBER"].ToString()) + "完成信号：" + 22 + Environment.NewLine);
                             break;
                         case 3: //照相
                             //写入名字
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "8")), dt3.Rows[0]["NAME"].ToString());
+                            plc.WritePLCByString(GetDBByConfig(feerackNo, "8"), GetAddressByConfig(feerackNo, "8"), GetLengthByConfig(feerackNo, "8"), dt3.Rows[0]["NAME"].ToString());
                             //写入工具号
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "9")), Convert.ToInt32(dt3.Rows[0]["PHOTO_NO"].ToString()));
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "9"), GetAddressByConfig(feerackNo, "9"), Convert.ToInt16(dt3.Rows[0]["PHOTO_NO"].ToString()));
                             //向PLC写入请求的步数
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                             // 完成
                             OPC.WriteItem(itemCode, 22);
-                            //String sql3 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,STEP_NO,CATEGORY,NAME,PHOTO_NO,RESULT,SIGNIFICANCE)VALUES(GETDATE(),'" + feerack + "#料架','请求步',21,'" + reqStep.ToString() + "','" + dt3.Rows[0]["CATEGORY"].ToString() + "','" + dt3.Rows[0]["NAME"].ToString() + "','" + dt3.Rows[0]["PHOTO_NO"].ToString() + "号相机,22,'请求步-照相：成功');";
-                            //db.ExecuteNonQuery(sql3);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求步" + feerackNo + "#料架" + " 请求信号： " + itemValue + " 请求步序：" + reqStep + " 类别: " + Convert.ToInt32(dt3.Rows[0]["CATEGORY"].ToString()) + " 名字：" + dt3.Rows[0]["NAME"].ToString() + "相机号： " + Convert.ToInt32(dt3.Rows[0]["PHOTO_NO"].ToString()) + "完成信号：" + 22 + Environment.NewLine);
                             break;
                         case 4:
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "7")), "10");
+                            plc.WritePLCByString(GetDBByConfig(feerackNo, "7"), GetAddressByConfig(feerackNo, "7"), GetLengthByConfig(feerackNo, "7"), "10");
                             //向PLC写入请求的步数
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "6")), reqStep.ToString());
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "6"), GetAddressByConfig(feerackNo, "6"), Convert.ToInt16(reqStep));
                             OPC.WriteItem(itemCode, 22);
                             break;
                     }
                     reqStepLog = reqStep; //记录步信息
-
                 }
             }
+            #endregion 请求步信息到此结束
+            #region 请求特征码
             if (itemValue == "31" && order == "1") //请求对比特征码
             {
-                pn = OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "14"))).ToString();
-                if (String.IsNullOrEmpty(pn))  //  && Convert.ToInt32(OPC.ReadItem(feerackControl)) == 31)
+                pn = plc.ReadPLCByString(GetDBByConfig(feerackNo, "14"), GetAddressByConfig(feerackNo, "14"), GetLengthByConfig(feerackNo, "14")).Trim("\0".ToCharArray());
+                if (String.IsNullOrEmpty(pn))
                 {
-                    pn = OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "14"))).ToString();
-                    if (String.IsNullOrEmpty(pn))// && Convert.ToInt32(OPC.ReadItem(feerackControl)) == 31)
+                    pn = plc.ReadPLCByString(GetDBByConfig(feerackNo, "14"), GetAddressByConfig(feerackNo, "14"), GetLengthByConfig(feerackNo, "14")).Trim("\0".ToCharArray());
+                    if (String.IsNullOrEmpty(pn))
                     {
-                        pn = OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "14"))).ToString();
-                        if (String.IsNullOrEmpty(pn))// && Convert.ToInt32(OPC.ReadItem(feerackControl)) == 31)
+                        pn = plc.ReadPLCByString(GetDBByConfig(feerackNo, "14"), GetAddressByConfig(feerackNo, "14"), GetLengthByConfig(feerackNo, "14")).Trim("\0".ToCharArray());
+                        if (String.IsNullOrEmpty(pn))
                         {
                             //写入为空或错误
                             OPC.WriteItem(itemCode, 39);
-                            //String sql = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PN,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比特征码',31,'" + pn + "',39,'请求对比特征码错误');";
-                            //db.ExecuteNonQuery(sql);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + " " + feerackNo + "#料架 " + "获取物料PN: " + pn + " 写入结果： " + 39 + " PN号为空" + Environment.NewLine);
                         }
                         else
                         {
-                            int type = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
-                            String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + type + " AND IDT.STEP_NO=" + Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString())) + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
+                            int type = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
+                            String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + type + " AND IDT.STEP_NO=" + plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18")) + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
                             DataTable dt4 = new DataTable();
                             dt4 = db.ExecuteDataTable(sql3);
                             if (String.Equals(pn, dt4.Rows[0]["FEATURE_CODE"].ToString()))
                             {
-                                //object a = OPC.ReadItem(feerackControl);
                                 //特征码通过
                                 if (Convert.ToInt32(OPC.ReadItem(itemCode)) == 31) OPC.WriteItem(itemCode, 32);
-                                //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PN,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比特征码',31,'" + pn + "',32,'对比特征码通过');";
-                                //db.ExecuteNonQuery(sql1);
-                                TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 当前步数：" + Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString())) + " 写入结果： " + 32 + " 表示特征码对比通过" + Environment.NewLine);
+                                TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 当前步数：" + plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18")) + " 写入结果： " + 32 + " 表示特征码对比通过" + Environment.NewLine);
                             }
                             else
                             {
                                 //特征码不通过
                                 if (Convert.ToInt32(OPC.ReadItem(itemCode)) == 31) OPC.WriteItem(itemCode, 33);
-                                //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PN,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比特征码',31,'" + pn + "',33,'对比特征码不通过');";
-                                //db.ExecuteNonQuery(sql1);
                                 TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 写入结果： " + 33 + " 表示特征码对比不通过" + Environment.NewLine);
                             }
                         }
                     }
                     else
                     {
-                        int type = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
-                        String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + type + " AND IDT.STEP_NO=" + Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString())) + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
+                        int type = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
+                        String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + type + " AND IDT.STEP_NO=" + plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18")) + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
                         DataTable dt4 = new DataTable();
                         dt4 = db.ExecuteDataTable(sql3);
                         if (String.Equals(pn, dt4.Rows[0]["FEATURE_CODE"].ToString()))
                         {
-                            //object a = OPC.ReadItem(feerackControl);
                             //特征码通过
                             if (Convert.ToInt32(OPC.ReadItem(itemCode)) == 31) OPC.WriteItem(itemCode, 32);
-                            //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PN,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比特征码',31,'" + pn + "',32,'对比特征码通过');";
-                            //db.ExecuteNonQuery(sql1);
-                            TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 当前步数：" + Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString())) + " 写入结果： " + 32 + " 表示特征码对比通过" + Environment.NewLine);
+                            TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 当前步数：" + plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18")) + " 写入结果： " + 32 + " 表示特征码对比通过" + Environment.NewLine);
                         }
                         else
                         {
                             //特征码不通过
                             if (Convert.ToInt32(OPC.ReadItem(itemCode)) == 31) OPC.WriteItem(itemCode, 33);
-                            //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PN,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比特征码',31,'" + pn + "',33,'对比特征码不通过');";
-                            //db.ExecuteNonQuery(sql1);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 写入结果： " + 33 + " 表示特征码对比不通过" + Environment.NewLine);
                         }
                     }
-
-                    //  WriteLog("请求对比特征码-请求信号： " + control +"获取物料PN: "+pn+ " 写入结果： " + 39 + " 表示物料pn为空");
                 }
                 else
                 {
-                    int type = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
-                    String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + type + " AND IDT.STEP_NO=" + Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString())) + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
+                    int type = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
+                    String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + type + " AND IDT.STEP_NO=" + plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18")) + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
                     DataTable dt4 = new DataTable();
                     dt4 = db.ExecuteDataTable(sql3);
                     if (String.Equals(pn, dt4.Rows[0]["FEATURE_CODE"].ToString()))
                     {
-                        //object a = OPC.ReadItem(feerackControl);
                         //特征码通过
                         if (Convert.ToInt32(OPC.ReadItem(itemCode)) == 31) OPC.WriteItem(itemCode, 32);
-                        //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PN,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比特征码',31,'" + pn + "',32,'对比特征码通过');";
-                        //db.ExecuteNonQuery(sql1);
-                        TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 当前步数：" + Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString())) + " 写入结果： " + 32 + " 表示特征码对比通过" + Environment.NewLine);
+                        TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 当前步数：" + plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18")) + " 写入结果： " + 32 + " 表示特征码对比通过" + Environment.NewLine);
                     }
                     else
                     {
                         //特征码不通过
                         if (Convert.ToInt32(OPC.ReadItem(itemCode)) == 31) OPC.WriteItem(itemCode, 33);
-                        //String sql1 = "INSERT dbo.XH_CONFIG_LOG(DT,FEERACK,BUSSINESS,CONTROL,PN,RESULT,SIGNIFICANCE)values(GETDATE(),'" + feerackNo + "#料架','对比特征码',31,'" + pn + "',33,'对比特征码不通过');";
-                        //db.ExecuteNonQuery(sql1);
                         TB_ShowLog.AppendText(DateTime.Now.ToString() + " 请求对比特征码" + feerackNo + "#料架" + " 请求信号： " + itemValue + "获取物料PN: " + pn + " 写入结果： " + 33 + " 表示特征码对比不通过" + Environment.NewLine);
                     }
                 }
             }
+            #endregion 请求特征码到此结束
+            #region 预校验
             if (itemValue == "41" && order == "1")//预校验
             {
                 //读取批次号
-                String kp=OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "16"))).ToString();
+                String kp = plc.ReadPLCByString(GetDBByConfig(feerackNo, "16"), GetAddressByConfig(feerackNo, "16"), GetLengthByConfig(feerackNo, "16")).Trim("\0".ToCharArray());
                 if (String.IsNullOrEmpty(kp))  //当批次号为空的时候，再读取KP
                 {
                     System.Threading.Thread.Sleep(800);
-                     kp = OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "16"))).ToString();
+                    kp = plc.ReadPLCByString(GetDBByConfig(feerackNo, "16"), GetAddressByConfig(feerackNo, "16"), GetLengthByConfig(feerackNo, "16")).Trim("\0".ToCharArray());
                      if (String.IsNullOrEmpty(kp)) //kp号为空的时候再读取KP
                      {
-                         kp = OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "16"))).ToString();
+                         kp = plc.ReadPLCByString(GetDBByConfig(feerackNo, "16"), GetAddressByConfig(feerackNo, "16"), GetLengthByConfig(feerackNo, "16")).Trim("\0".ToCharArray());
                          if (String.IsNullOrEmpty(kp)) //kp为空，返回错误
                          {
                              //错误信息写入1
-                             OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "15")), 1);
+                             plc.WritePLCByInt16(GetDBByConfig(feerackNo, "15"), GetAddressByConfig(feerackNo, "15"), 1);
                              //交互完成信号
                              OPC.WriteItem(itemCode, 49);
                              //界面显示扫描结果
@@ -1618,7 +1555,7 @@ namespace IntelligentRackConfiguration
                              if (dt.Rows.Count != 1)
                              {
                                  //错误信息写入1
-                                 OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "15")), 3);
+                                 plc.WritePLCByInt16(GetDBByConfig(feerackNo, "15"), GetAddressByConfig(feerackNo, "15"), 3);
                                  //交互完成信号
                                  OPC.WriteItem(itemCode, 49);
                                  //界面显示扫描结果
@@ -1629,18 +1566,18 @@ namespace IntelligentRackConfiguration
                                  //本地PN
                                  String materialPn = dt.Rows[0]["MATERIAL_PN"].ToString();
                                  //获取产品类别和配方配置的PN
-                                 opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                                 opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                                  if (opcProductionType <= 0 || opcProductionType > 20)
                                  {
                                      //产品类型超过了20
-                                     OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "15")), 5);
+                                     plc.WritePLCByInt16(GetDBByConfig(feerackNo, "15"), GetAddressByConfig(feerackNo, "15"), 5);
                                      //交互完成信号
                                      OPC.WriteItem(itemCode, 49);
                                      TB_ShowLog.AppendText(DateTime.Now.ToString() + " 业务：预校验 料架号：" + feerackNo + "#料架" + "  触发信号： " + itemValue + "  批次号：" + kp + "  产品类型：" + opcProductionType + "  错误信息：5" + "  完成信号： " + "49" + Environment.NewLine);
                                  }
                                  else
                                  {
-                                     int reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString()));
+                                     int reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18"));
                                      String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND IDT.STEP_NO=" + reqStep + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
                                      DataTable dt1 = new DataTable();
                                      dt1 = db.ExecuteDataTable(sql3);
@@ -1649,7 +1586,7 @@ namespace IntelligentRackConfiguration
                                          if (materialPn == dt1.Rows[0]["FEATURE_CODE"].ToString())
                                          {
                                              //写入PN
-                                             OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "17")), materialPn);
+                                             plc.WritePLCByString(GetDBByConfig(feerackNo, "17"), GetAddressByConfig(feerackNo, "17"), GetLengthByConfig(feerackNo, "17"), materialPn);
                                              //交互完成信号
                                              OPC.WriteItem(itemCode, 42);
                                              TB_ShowLog.AppendText(DateTime.Now.ToString() + " 业务：预校验 料架号：" + feerackNo + "#料架" + "  触发信号： " + itemValue + "  批次号：" + kp + "  产品类型：" + opcProductionType + "请求步： " + reqStep + "  配置PN号：" + dt1.Rows[0]["FEATURE_CODE"].ToString() + "  完成信号： " + "42" + Environment.NewLine);
@@ -1675,7 +1612,7 @@ namespace IntelligentRackConfiguration
                          if (dt.Rows.Count != 1)
                          {
                              //错误信息写入1
-                             OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "15")), 3);
+                             plc.WritePLCByInt16(GetDBByConfig(feerackNo, "15"), GetAddressByConfig(feerackNo, "15"), 3);
                              //交互完成信号
                              OPC.WriteItem(itemCode, 49);
                              //界面显示扫描结果
@@ -1686,18 +1623,18 @@ namespace IntelligentRackConfiguration
                              //本地PN
                              String materialPn = dt.Rows[0]["MATERIAL_PN"].ToString();
                              //获取产品类别和配方配置的PN
-                             opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                             opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                              if (opcProductionType <= 0 || opcProductionType > 20)
                              {
                                  //产品类型超过了20
-                                 OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "15")), 5);
+                                 plc.WritePLCByInt16(GetDBByConfig(feerackNo, "15"), GetAddressByConfig(feerackNo, "15"), 5);
                                  //交互完成信号
                                  OPC.WriteItem(itemCode, 49);
                                  TB_ShowLog.AppendText(DateTime.Now.ToString() + " 业务：预校验 料架号：" + feerackNo + "#料架" + "  触发信号： " + itemValue + "  批次号：" + kp + "  产品类型：" + opcProductionType + "  错误信息：5" + "  完成信号： " + "49" + Environment.NewLine);
                              }
                              else
                              {
-                                 int reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString()));
+                                 int reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18"));
                                  String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND IDT.STEP_NO=" + reqStep + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
                                  DataTable dt1 = new DataTable();
                                  dt1 = db.ExecuteDataTable(sql3);
@@ -1706,7 +1643,7 @@ namespace IntelligentRackConfiguration
                                      if (materialPn == dt1.Rows[0]["FEATURE_CODE"].ToString())
                                      {
                                          //写入PN
-                                         OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "17")), materialPn);
+                                         plc.WritePLCByString(GetDBByConfig(feerackNo, "17"), GetAddressByConfig(feerackNo, "17"), GetLengthByConfig(feerackNo, "17"), materialPn);
                                          //交互完成信号
                                          OPC.WriteItem(itemCode, 42);
                                          TB_ShowLog.AppendText(DateTime.Now.ToString() + " 业务：预校验 料架号：" + feerackNo + "#料架" + "  触发信号： " + itemValue + "  批次号：" + kp + "  产品类型：" + opcProductionType + "请求步： " + reqStep + "  配置PN号：" + dt1.Rows[0]["FEATURE_CODE"].ToString() + "  完成信号： " + "42" + Environment.NewLine);
@@ -1732,7 +1669,7 @@ namespace IntelligentRackConfiguration
                     if (dt.Rows.Count != 1)
                     {
                         //错误信息写入1
-                        OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "15")), 3);
+                        plc.WritePLCByInt16(GetDBByConfig(feerackNo, "15"), GetAddressByConfig(feerackNo, "15"), 3);
                         //交互完成信号
                         OPC.WriteItem(itemCode, 49);
                         //界面显示扫描结果
@@ -1743,18 +1680,18 @@ namespace IntelligentRackConfiguration
                         //本地PN
                         String materialPn = dt.Rows[0]["MATERIAL_PN"].ToString();
                         //获取产品类别和配方配置的PN
-                        opcProductionType = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "3"))).ToString()));
+                        opcProductionType = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "3"), GetAddressByConfig(feerackNo, "3"));
                         if (opcProductionType <= 0 || opcProductionType > 20)
                         {
                             //产品类型超过了20
-                            OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "15")), 5);
+                            plc.WritePLCByInt16(GetDBByConfig(feerackNo, "15"), GetAddressByConfig(feerackNo, "15"), 5);
                             //交互完成信号
                             OPC.WriteItem(itemCode, 49);
                             TB_ShowLog.AppendText(DateTime.Now.ToString() + " 业务：预校验 料架号：" + feerackNo + "#料架" + "  触发信号： " + itemValue + "  批次号：" + kp + "  产品类型：" + opcProductionType + "  错误信息：5" + "  完成信号： " + "49" + Environment.NewLine);
                         }
                         else
                         {
-                            int reqStep = Convert.ToInt32((OPC.ReadItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "18"))).ToString()));
+                            int reqStep = plc.ReadPLCByInt16(GetDBByConfig(feerackNo, "18"), GetAddressByConfig(feerackNo, "18"));
                             String sql3 = "SELECT IDT.FEATURE_CODE FROM XH_FEERACK_T FT,XH_INTELLIGENTRACK_DETAIL_T IDT,XH_PRODUCTION_T PT,XH_INTELLIGENTRACK_T IT WHERE FT.FEERACK_ID=PT.FEERACK_ID AND IT.PRODUCTION_ID=PT.PRODUCTION_ID AND IDT.INTELLIGENTRACK_ID=IT.INTELLIGENTRACK_ID AND PT.PRODUCTION_TYPE=" + opcProductionType + " AND IDT.STEP_NO=" + reqStep + " AND FT.FEERACK_NAME LIKE '" + feerackNo + "%' AND IDT.DELETE_FLAG='0'" + ";";
                             DataTable dt1 = new DataTable();
                             dt1 = db.ExecuteDataTable(sql3);
@@ -1763,7 +1700,7 @@ namespace IntelligentRackConfiguration
                                 if (materialPn == dt1.Rows[0]["FEATURE_CODE"].ToString())
                                 {
                                     //写入PN
-                                    OPC.WriteItem(Convert.ToInt32(GetClientByFeerackAndOrder(feerackNo, "17")), materialPn);
+                                    plc.WritePLCByString(GetDBByConfig(feerackNo, "17"), GetAddressByConfig(feerackNo, "17"), GetLengthByConfig(feerackNo, "17"), materialPn);
                                     //交互完成信号
                                     OPC.WriteItem(itemCode, 42);
                                     TB_ShowLog.AppendText(DateTime.Now.ToString() + " 业务：预校验 料架号：" + feerackNo + "#料架" + "  触发信号： " + itemValue + "  批次号：" + kp + "  产品类型：" + opcProductionType + "请求步： " + reqStep + "  配置PN号：" + dt1.Rows[0]["FEATURE_CODE"].ToString() + "  完成信号： " + "42" + Environment.NewLine);
@@ -1781,6 +1718,81 @@ namespace IntelligentRackConfiguration
                     }
                 }
             }
+            #endregion 预校验结束
+        }
+        /// <summary>
+        /// 根据配置获取变量DB
+        /// </summary>
+        /// <param name="feerackNo"></param>
+        /// <returns></returns>
+        public static int GetDBByConfig(string feerack,string order)
+        {
+            string result = null;
+            XmlDocument xmlDoc = new XmlDocument();
+            string addr = "PLCADDRESSCONFIG.xml";
+            xmlDoc.Load(addr);
+            XmlNode nd;
+            nd = xmlDoc.SelectSingleNode("PLC");
+            XmlNodeList xnl = nd.ChildNodes;
+            foreach (XmlNode xn in xnl)
+            {
+                XmlElement xe = (XmlElement)xn;
+                if (xe.GetAttribute("FEERACK") == feerack && xe.GetAttribute("ORDER") == order)
+                {
+                    result = xe.GetAttribute("DB");
+                }
+            }
+            return Convert.ToInt32(result);
+        }
+        /// <summary>
+        /// 根据配置获取变量Address
+        /// </summary>
+        /// <param name="feerack"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public static int GetAddressByConfig(string feerack, string order)
+        {
+            string result = null;
+            XmlDocument xmlDoc = new XmlDocument();
+            string addr = "PLCADDRESSCONFIG.xml";
+            xmlDoc.Load(addr);
+            XmlNode nd;
+            nd = xmlDoc.SelectSingleNode("PLC");
+            XmlNodeList xnl = nd.ChildNodes;
+            foreach (XmlNode xn in xnl)
+            {
+                XmlElement xe = (XmlElement)xn;
+                if (xe.GetAttribute("FEERACK") == feerack && xe.GetAttribute("ORDER") == order)
+                {
+                    result = xe.GetAttribute("ADDRESS");
+                }
+            }
+            return Convert.ToInt32(result);
+        }
+        /// <summary>
+        /// 根据配置获取变量长度
+        /// </summary>
+        /// <param name="feerack"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public static int GetLengthByConfig(string feerack, string order)
+        {
+            string result = null;
+            XmlDocument xmlDoc = new XmlDocument();
+            string addr = "PLCADDRESSCONFIG.xml";
+            xmlDoc.Load(addr);
+            XmlNode nd;
+            nd = xmlDoc.SelectSingleNode("PLC");
+            XmlNodeList xnl = nd.ChildNodes;
+            foreach (XmlNode xn in xnl)
+            {
+                XmlElement xe = (XmlElement)xn;
+                if (xe.GetAttribute("FEERACK") == feerack && xe.GetAttribute("ORDER") == order)
+                {
+                    result = xe.GetAttribute("LENGTH");
+                }
+            }
+            return Convert.ToInt32(result);
         }
     }
 }

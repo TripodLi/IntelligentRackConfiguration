@@ -40,6 +40,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\MutualCheck\MutualCheck\bin\Debug\MyOPC.dll</HintPath>
     </Reference>
+    <Reference Include="MyPLCDataview, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\资料\OPCdll\直接读取PLC地址块\MyPLCDataview.dll</HintPath>
+    </Reference>
     <Reference Include="MySql, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\项目\宁德PN校验\PL7 MIS交互\ZZT PLC7 MIS\Reader\bin\Debug\MySql.dll</HintPath>
@@ -67,6 +71,12 @@
     </Compile>
     <Compile Include="ConnectionOpcForm.Designer.cs">
       <DependentUpon>ConnectionOpcForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FeerackManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FeerackManager.Designer.cs">
+      <DependentUpon>FeerackManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -96,6 +106,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionOpcForm.resx">
       <DependentUpon>ConnectionOpcForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FeerackManager.resx">
+      <DependentUpon>FeerackManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
